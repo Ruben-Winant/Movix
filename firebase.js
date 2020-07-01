@@ -9,15 +9,15 @@ import * as firebase from "firebase";
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyDoIPQ9ad5FfTS6U0aJd4V387Q7kqxWMXM",
-  authDomain: "movixdb.firebaseapp.com",
-  databaseURL: "https://movixdb.firebaseio.com",
-  projectId: "movixdb",
-  storageBucket: "movixdb.appspot.com",
-  messagingSenderId: "381677151963",
-  appId: "1:381677151963:web:b54f35e305e4f978ed4efe",
-  measurementId: "G-E31D51VWJL",
+  apiKey: "AIzaSyC40iOKA9A0qfAbgR7dU-nYnqleigc_dds",
+  authDomain: "movix-7e84e.firebaseapp.com",
+  databaseURL: "https://movix-7e84e.firebaseio.com",
+  projectId: "movix-7e84e",
+  storageBucket: "movix-7e84e.appspot.com",
+  messagingSenderId: "410412309450",
+  appId: "1:410412309450:web:b6e313c3025a701a914d33",
+  measurementId: "G-DDEZDCS42W"
 };
-
+   
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
