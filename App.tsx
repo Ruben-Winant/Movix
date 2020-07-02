@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from "react";
+import React, { Component } from "react";
 import { HomeScreen, LoginScreen, RegistrationScreen } from "./src/scenes";
 import "react-native-gesture-handler";
 import { createAppContainer } from "react-navigation";
@@ -35,6 +35,9 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   componentDidMount() {
+    //check if there are less than 20 movies in asyncstorage
+
+    //firebase
     const usersRef = firebase.firestore().collection("users");
     firebase.auth().onAuthStateChanged((user: any) => {
       if (user) {
@@ -53,6 +56,10 @@ export default class App extends Component<AppProps, AppState> {
         this.setLoading(false);
       }
     });
+  }
+
+  componentWillUnmount() {
+    //close db
   }
 
   render() {
