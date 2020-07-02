@@ -3,7 +3,7 @@ import * as firebase from "firebase";
 // Optionally import the services that you want to use
 //import "firebase/auth";
 //import "firebase/database";
-//import "firebase/firestore";
+import "firebase/firestore";
 //import "firebase/functions";
 //import "firebase/storage";
 
@@ -16,8 +16,11 @@ const firebaseConfig = {
   storageBucket: "movix-7e84e.appspot.com",
   messagingSenderId: "410412309450",
   appId: "1:410412309450:web:b6e313c3025a701a914d33",
-  measurementId: "G-DDEZDCS42W"
+  measurementId: "G-DDEZDCS42W",
 };
-   
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+export { firebase };
