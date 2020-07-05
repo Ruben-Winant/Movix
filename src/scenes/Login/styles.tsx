@@ -1,15 +1,16 @@
 import { StyleSheet } from "react-native";
+import colors from "../../assets/colors";
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: colors.darkblue,
   },
   title: {},
   logo: {
     flex: 1,
-    height: 120,
-    width: 90,
+    width: 270,
     alignSelf: "center",
     margin: 30,
   },
@@ -17,7 +18,7 @@ export default StyleSheet.create({
     height: 48,
     borderRadius: 5,
     overflow: "hidden",
-    backgroundColor: "white",
+    backgroundColor: colors.white,
     marginTop: 10,
     marginBottom: 10,
     marginLeft: 30,
@@ -25,7 +26,7 @@ export default StyleSheet.create({
     paddingLeft: 16,
   },
   button: {
-    backgroundColor: "#788eec",
+    backgroundColor: colors.lightgreen,
     marginLeft: 30,
     marginRight: 30,
     marginTop: 20,
@@ -35,8 +36,8 @@ export default StyleSheet.create({
     justifyContent: "center",
   },
   buttonTitle: {
-    color: "white",
-    fontSize: 16,
+    color: colors.white,
+    fontSize: 18,
     fontWeight: "bold",
   },
   footerView: {
@@ -46,11 +47,11 @@ export default StyleSheet.create({
   },
   footerText: {
     fontSize: 16,
-    color: "#2e2e2d",
+    color: colors.white,
   },
   footerLink: {
-    color: "#788eec",
+    color: colors.lightgreen,
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 18,
   },
 });

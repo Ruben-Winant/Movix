@@ -1,16 +1,19 @@
 import React, { Component } from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { TouchableHighlight, View, StyleSheet } from "react-native";
+import { Movie } from "../../types/Movie";
 
-interface AbProps {
+interface BAbProps {
   iconname: string;
   iconcolor: string;
   solid: boolean;
-  btnfunc: Function;
+  flag: flags;
 }
-interface AbState {}
+interface BAbState {}
 
-export default class ActionButton extends Component<AbProps, AbState> {
+type flags = "DISLIKE" | "SEEN" | "LIKE";
+
+export default class BottomActionButton extends Component<BAbProps, BAbState> {
   stylesheets = StyleSheet.create({
     actionbtnouter: {
       justifyContent: "center",
@@ -26,11 +29,39 @@ export default class ActionButton extends Component<AbProps, AbState> {
     },
   });
 
+  getActionFunction(flag: flags, movie: Movie) {
+    switch (flag) {
+      case "DISLIKE":
+        const onPressDislike = (movie: Movie) => {
+          alert("disliked " + movie.title);
+        };
+        return onPressDislike(movie);
+
+      case "SEEN":
+        const onPressSeen = (movie: Movie) => {
+          alert("seen " + movie.title);
+        };
+        return onPressSeen(movie);
+
+      case "LIKE":
+        const onPressLike = (movie: Movie) => {
+          alert("liked " + movie.title);
+        };
+        return onPressLike(movie);
+
+      default:
+        const onPressError = () => {
+          alert("Error: no movie selected");
+        };
+        return onPressError;
+    }
+  }
+
   render() {
     return (
       <TouchableHighlight
         style={this.stylesheets.actionbtnouter}
-        onPress={() => this.props.btnfunc()}
+        onPress={() => this.getActionFunction(this.props.flag)}
         underlayColor={this.props.iconcolor}
       >
         <View>
@@ -45,25 +76,4 @@ export default class ActionButton extends Component<AbProps, AbState> {
       </TouchableHighlight>
     );
   }
-}
-
-{
-  /* <ActionButton
-            iconname="eye"
-            iconcolor="#468EDC"
-            solid={false}
-            btnfunc={() => this.onActionButtonPressSeen(movies[0].id)}
-          />
-          <ActionButton
-            iconname="times"
-            iconcolor="#BF3B3B"
-            solid={true}
-            btnfunc={() => this.onActionButtonPressNotInterested(movies[0].id)}
-          />
-          <ActionButton
-            iconname="heart"
-            iconcolor="#49CF97"
-            solid={true}
-            btnfunc={() => this.onActionButtonPressInterested(movies[0].id)}
-          /> */
 }

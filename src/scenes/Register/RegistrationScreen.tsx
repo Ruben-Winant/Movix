@@ -12,6 +12,7 @@ import {
 import { NavigationStackProp } from "react-navigation-stack";
 import styles from "./styles";
 import { firebase } from "../../firebase/firebaseConfig";
+import colors from "../../assets/colors";
 
 interface LoginScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -105,12 +106,12 @@ export default class RegistrationScreen extends Component<
         <View style={{ flex: 1, width: "100%" }}>
           <Image
             style={styles.logo}
-            source={require("../../../assets/icon.png")}
+            source={require("../../../src/assets/images/RwLogo.png")}
           />
           <TextInput
             style={styles.input}
-            placeholder="Full Name"
-            placeholderTextColor="#aaaaaa"
+            placeholder="Username"
+            placeholderTextColor={colors.grey}
             onChangeText={(text) => this.setFullName(text)}
             underlineColorAndroid="transparent"
             autoCapitalize="none"
@@ -118,14 +119,14 @@ export default class RegistrationScreen extends Component<
           <TextInput
             style={styles.input}
             placeholder="E-mail"
-            placeholderTextColor="#aaaaaa"
+            placeholderTextColor={colors.grey}
             onChangeText={(text) => this.setEmail(text)}
             underlineColorAndroid="transparent"
             autoCapitalize="none"
           />
           <TextInput
             style={styles.input}
-            placeholderTextColor="#aaaaaa"
+            placeholderTextColor={colors.grey}
             secureTextEntry
             placeholder="Password"
             onChangeText={(text) => this.setPassword(text)}
@@ -134,7 +135,7 @@ export default class RegistrationScreen extends Component<
           />
           <TextInput
             style={styles.input}
-            placeholderTextColor="#aaaaaa"
+            placeholderTextColor={colors.grey}
             secureTextEntry
             placeholder="Confirm Password"
             onChangeText={(text) => this.setConfirmPassword(text)}
