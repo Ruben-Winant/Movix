@@ -22,7 +22,7 @@ export default class HomeScreen extends Component<
       <View style={{ flex: 1, backgroundColor: colors.darkblue }}>
         {
           <View style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 3 }}>
               <ImageSlide />
             </View>
             <View style={{ flex: 1 }}>

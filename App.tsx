@@ -45,7 +45,7 @@ export default class App extends Component<AppProps, AppState> {
       const jsonValue3 = JSON.stringify(movieDataFile.slice(2001, 3000));
       const jsonValue4 = JSON.stringify(movieDataFile.slice(3001, 4000));
       const jsonValue5 = JSON.stringify(movieDataFile.slice(4001, 5000));
-      await AsyncStorage.setItem("@movieData", jsonValue);
+      await AsyncStorage.setItem("@movieData1", jsonValue);
       await AsyncStorage.setItem("@movieData2", jsonValue2);
       await AsyncStorage.setItem("@movieData3", jsonValue3);
       await AsyncStorage.setItem("@movieData4", jsonValue4);

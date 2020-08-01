@@ -36,39 +36,40 @@ export default class LoginScreen extends Component<
     });
   }
 
-  onFooterLinkPress = () => {
-    this.props.navigation.navigate("Register");
-  };
-
   onLoginPress = () => {
     if (this.state.email == null || this.state.password == null) {
       Alert.alert("Whoops", "Email or password was left open");
       return;
+    } else {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.state.email, this.state.password)
+        .then((response: any) => {
+          const uid = response.user.uid;
+          const usersRef = firebase.firestore().collection("users");
+          usersRef
+            .doc(uid)
+            .get()
+            .then((firestoreDocument) => {
+              if (!firestoreDocument.exists) {
+                alert("User does not exist anymore.");
+                return;
+              }
+              const user = firestoreDocument.data();
+              this.props.navigation.navigate("Home", { user });
+            })
+            .catch((error) => {
+              alert(error);
+            });
+        })
+        .catch((error) => {
+          alert(error);
+        });
     }
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then((response: any) => {
-        const uid = response.user.uid;
-        const usersRef = firebase.firestore().collection("users");
-        usersRef
-          .doc(uid)
-          .get()
-          .then((firestoreDocument) => {
-            if (!firestoreDocument.exists) {
-              alert("User does not exist anymore.");
-              return;
-            }
-            const user = firestoreDocument.data();
-            this.props.navigation.navigate("Home", { user });
-          })
-          .catch((error) => {
-            alert(error);
-          });
-      })
-      .catch((error) => {
-        alert(error);
-      });
+  };
+
+  onFooterLinkPress = () => {
+    this.props.navigation.navigate("Register");
   };
 
   render() {
