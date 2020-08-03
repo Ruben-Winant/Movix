@@ -1,6 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, RefObject } from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { TouchableHighlight, View, StyleSheet, Text } from "react-native";
+import {
+  TouchableHighlight,
+  View,
+  StyleSheet,
+  FlatList,
+  Animated,
+} from "react-native";
 import { Movie } from "../../types/Movie";
 
 interface BAbProps {
@@ -8,10 +14,11 @@ interface BAbProps {
   iconcolor: string;
   solid: boolean;
   flag: flags;
+  flref: RefObject<FlatList<Movie>>;
 }
 interface BAbState {}
 
-type flags = "DISLIKE" | "SEEN" | "LIKE";
+type flags = "DISLIKE" | "SEEN" | "LIKE" | "INFO";
 
 export default class BottomActionButton extends Component<BAbProps, BAbState> {
   stylesheets = StyleSheet.create({
@@ -61,7 +68,12 @@ export default class BottomActionButton extends Component<BAbProps, BAbState> {
     return (
       <TouchableHighlight
         style={this.stylesheets.actionbtnouter}
-        onPress={() => this.getActionFunction(this.props.flag)}
+        onPress={() =>
+          this.props.flref.current?.scrollToIndex({
+            animated: true,
+            index: 1,
+          })
+        }
         underlayColor={this.props.iconcolor}
       >
         <View>

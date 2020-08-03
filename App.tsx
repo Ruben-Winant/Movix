@@ -86,7 +86,7 @@ export default class App extends Component<AppProps, AppState> {
     } else {
       return (
         <AppContainer>
-          <StatusBar backgroundColor={colors.darkblue} />
+          <StatusBar hidden={true} translucent={true} />
         </AppContainer>
       );
     }
