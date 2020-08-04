@@ -1,15 +1,20 @@
-import React, { Component, RefObject } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import React, { Component } from "react";
+import { View, StyleSheet } from "react-native";
 import colors from "../../assets/colors";
 import BottomActionButton from "../atoms/BottomActionButton";
 import { Movie } from "../../types/Movie";
 
 interface BBprops {
-  flref: RefObject<FlatList<Movie>>;
+  handlePress: Function;
+  movie: Movie;
 }
 interface BBstate {}
 
 export default class BottomBar extends Component<BBprops, BBstate> {
+  constructor(props: BBprops) {
+    super(props);
+  }
+
   render() {
     return (
       <View style={styles.bottombar}>
@@ -19,7 +24,8 @@ export default class BottomBar extends Component<BBprops, BBstate> {
             iconcolor="#BF3B3B"
             solid={true}
             flag="DISLIKE"
-            flref={this.props.flref}
+            handlePress={this.props.handlePress}
+            movie={this.props.movie}
           />
         </View>
 
@@ -30,7 +36,8 @@ export default class BottomBar extends Component<BBprops, BBstate> {
               iconcolor="#468EDC"
               solid={false}
               flag="SEEN"
-              flref={this.props.flref}
+              handlePress={this.props.handlePress}
+              movie={this.props.movie}
             />
           </View>
 
@@ -40,7 +47,8 @@ export default class BottomBar extends Component<BBprops, BBstate> {
               iconcolor="#DDDDDD"
               solid={true}
               flag="INFO"
-              flref={this.props.flref}
+              handlePress={this.props.handlePress}
+              movie={this.props.movie}
             />
           </View>
         </View>
@@ -51,7 +59,8 @@ export default class BottomBar extends Component<BBprops, BBstate> {
             iconcolor="#49CF97"
             solid={true}
             flag="LIKE"
-            flref={this.props.flref}
+            handlePress={this.props.handlePress}
+            movie={this.props.movie}
           />
         </View>
       </View>

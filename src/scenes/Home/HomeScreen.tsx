@@ -1,11 +1,12 @@
 import React, { Component, createRef } from "react";
-import { View, Image, FlatList, ViewToken } from "react-native";
+import { View, FlatList } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
 import { Movie } from "../../types/Movie";
 import { BottomBar, ImageView } from "../../components/index";
 import colors from "../../assets/colors";
 import dataController from "../../assets/data/dataController";
+import { Flags } from "../../components/atoms/Flags";
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -14,6 +15,8 @@ interface HomeScreenProps {
 interface HomeScreenState {
   movies: Movie[];
   moviesLoaded: boolean;
+  listPos: number;
+  currentFlatlistItem: Movie;
 }
 
 export default class HomeScreen extends Component<
@@ -25,9 +28,12 @@ export default class HomeScreen extends Component<
     this.state = {
       movies: [],
       moviesLoaded: false,
+      listPos: 0,
+      currentFlatlistItem: null,
     };
   }
 
+  //when component loads in fetch the data
   componentDidMount() {
     let dataCont = new dataController({});
     dataCont.getData(1).then((res) =>
@@ -38,17 +44,58 @@ export default class HomeScreen extends Component<
     );
   }
 
-  flatlistRef = createRef<FlatList<Movie>>();
-
-  _scrollToIndex = () => {
-    this.flatlistRef.current?.scrollToIndex({ animated: true, index: 1 });
-  };
-
-  _onViewableItemsChanged = ({ viewableItems, changed }: any) => {
+  //change the state of the current item on list change
+  _onViewableItemsChanged = ({ viewableItems }: any) => {
     //.key = movie id
     //.index = place in list
-    //.item = movie item (implementation:) let movitem = viewableItems[0].item as Movie;
+    //.item = movie item
+    let currItem = viewableItems[0].item as Movie;
+    this.setState({ currentFlatlistItem: currItem });
   };
+
+  //create ref to flatlist
+  flatlistRef = createRef<FlatList<Movie>>();
+
+  //functions happens when one of the bottom functions is pressed
+  moveToNextItem = () => {
+    this.setState({
+      listPos: this.state.listPos + 1,
+    });
+
+    this.flatlistRef.current?.scrollToIndex({
+      animated: true,
+      index: this.state.listPos,
+    });
+  };
+
+  getActionFunction(flag: Flags, movie: Movie) {
+    switch (flag) {
+      case "DISLIKE":
+        const onPressDislike = () => {
+          alert("disliked " + movie.title);
+          this.moveToNextItem(); //!HIER LOOPT HET NU WEER MIS
+        };
+        return onPressDislike();
+
+      case "SEEN":
+        const onPressSeen = (movie: Movie) => {
+          alert("seen " + movie.title);
+        };
+        return onPressSeen(movie);
+
+      case "LIKE":
+        const onPressLike = (movie: Movie) => {
+          alert("liked " + movie.title);
+        };
+        return onPressLike(movie);
+
+      default:
+        const onPressError = () => {
+          alert("Error: no movie selected");
+        };
+        return onPressError;
+    }
+  }
 
   render() {
     return (
@@ -68,7 +115,10 @@ export default class HomeScreen extends Component<
             />
           </View>
           <View style={{ flex: 1 }}>
-            <BottomBar flref={this.flatlistRef} />
+            <BottomBar
+              movie={this.state.currentFlatlistItem}
+              handlePress={this.getActionFunction}
+            />
           </View>
         </View>
       </View>
