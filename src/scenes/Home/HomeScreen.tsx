@@ -3,10 +3,10 @@ import { View, FlatList } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
 import { Movie } from "../../types/Movie";
-import { BottomBar, ImageView } from "../../components/index";
 import colors from "../../assets/colors";
 import dataController from "../../assets/data/dataController";
-import { Flags } from "../../components/atoms/Flags";
+import { Flags } from "../../types/Flags";
+import { BottomBar, ImageView } from "../../components";
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -57,45 +57,47 @@ export default class HomeScreen extends Component<
   flatlistRef = createRef<FlatList<Movie>>();
 
   //functions happens when one of the bottom functions is pressed
-  moveToNextItem = () => {
-    this.setState({
-      listPos: this.state.listPos + 1,
-    });
+  moveToNextItem = (flag: Flags, movie: Movie) => {
+    //forward to next card
+    let next = () => {
+      this.setState({
+        listPos: this.state.listPos + 1,
+      });
 
-    this.flatlistRef.current?.scrollToIndex({
-      animated: true,
-      index: this.state.listPos,
-    });
+      this.flatlistRef.current?.scrollToIndex({
+        animated: true,
+        index: this.state.listPos,
+      });
+    };
+
+    //mark movie as flag
+    let onPressedSeen = () => {
+      alert("seen " + movie.title);
+    };
+
+    let onPressedDisliked = () => {
+      alert("dislike " + movie.title);
+    };
+
+    let onPressedLiked = () => {
+      alert("liked " + movie.title);
+    };
+
+    //navigate to info page
+    let onPressedInfo = () => {
+      alert("gathering info about " + movie.title);
+    };
+
+    flag === "DISLIKE"
+      ? (onPressedDisliked(), next())
+      : flag === "SEEN"
+      ? (onPressedSeen(), next())
+      : flag === "LIKE"
+      ? (onPressedLiked(), next())
+      : flag === "INFO"
+      ? onPressedInfo()
+      : console.log("Something went wrong");
   };
-
-  getActionFunction(flag: Flags, movie: Movie) {
-    switch (flag) {
-      case "DISLIKE":
-        const onPressDislike = () => {
-          alert("disliked " + movie.title);
-          this.moveToNextItem(); //!HIER LOOPT HET NU WEER MIS
-        };
-        return onPressDislike();
-
-      case "SEEN":
-        const onPressSeen = (movie: Movie) => {
-          alert("seen " + movie.title);
-        };
-        return onPressSeen(movie);
-
-      case "LIKE":
-        const onPressLike = (movie: Movie) => {
-          alert("liked " + movie.title);
-        };
-        return onPressLike(movie);
-
-      default:
-        const onPressError = () => {
-          alert("Error: no movie selected");
-        };
-        return onPressError;
-    }
-  }
 
   render() {
     return (
@@ -117,7 +119,7 @@ export default class HomeScreen extends Component<
           <View style={{ flex: 1 }}>
             <BottomBar
               movie={this.state.currentFlatlistItem}
-              handlePress={this.getActionFunction}
+              handlePress={this.moveToNextItem}
             />
           </View>
         </View>

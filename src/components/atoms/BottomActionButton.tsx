@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { TouchableHighlight, View, StyleSheet } from "react-native";
-import { Flags } from "./Flags";
+import { Flags } from "../../types/Flags";
 import { Movie } from "../../types/Movie";
 
 interface BAbProps {
