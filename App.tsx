@@ -73,6 +73,7 @@ export default class App extends Component<AppProps, AppState> {
           })
           .catch((error: any) => {
             this.setLoading(false);
+            console.log(error.message);
           });
       } else {
         this.setLoading(false);

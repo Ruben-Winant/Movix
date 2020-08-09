@@ -3,6 +3,7 @@ import "react-native-gesture-handler";
 import { Movie } from "../../types/Movie";
 import AsyncStorage from "@react-native-community/async-storage";
 import { Genre } from "../../types/Genre";
+import { firebase } from "./../../../src/firebase/firebaseConfig";
 
 export default class dataController extends Component {
   constructor(props: any) {
@@ -12,15 +13,16 @@ export default class dataController extends Component {
     this.getAllMovies = this.getAllMovies.bind(this);
   }
 
-  getData = async (page: number) => {
+  getData = async () => {
     //returns all movies as an array of movies
-    //only return 1000 at a time to work with
     let movies: Movie[] = [];
     try {
-      let datapath = ("@movieData" + page).toString();
-      const jsonValue = await AsyncStorage.getItem(datapath);
-      jsonValue != null ? (movies = JSON.parse(jsonValue)) : alert("fucked");
-      //!return every movie without a flag
+      let db = firebase.database();
+      await (await db.ref().once("value")).forEach((child) => {
+        let movJson = JSON.stringify(child.exportVal());
+        let movObj = JSON.parse(movJson);
+        movies.push(movObj);
+      });
     } catch (e) {
       console.log(e);
     }
@@ -31,10 +33,9 @@ export default class dataController extends Component {
 
   //returns all movies
   getAllMovies = async (page: number) => {
-    //page 1 returns first 1000, page 2 next 1000, ...
     //limit result to max x movies
     let movies: Movie[] = [];
-    this.getData(page).then((res) => (movies = res));
+    this.getData().then((res) => (movies = res));
     return movies;
   };
 
@@ -44,7 +45,7 @@ export default class dataController extends Component {
     let resultMovie: Movie = Object.create(null);
 
     for (let index = 1; index < 6; index++) {
-      this.getData(index).then((result: Movie[] | undefined) => {
+      this.getData().then((result: Movie[] | undefined) => {
         if (typeof result != "undefined") {
           result.forEach((movie: Movie) => {
             if (movie.id == id) {
@@ -64,7 +65,7 @@ export default class dataController extends Component {
     let resultMovies: Movie[] = [];
 
     for (let index = 1; index < 6; index++) {
-      this.getData(index).then((result: Movie[] | undefined) => {
+      this.getData().then((result: Movie[] | undefined) => {
         if (typeof result != "undefined") {
           result.forEach((movie: Movie) => {
             if (ids.includes(movie.id)) {
@@ -85,7 +86,7 @@ export default class dataController extends Component {
     let resultMovies: Movie[] = [];
 
     for (let index = 1; index < 6; index++) {
-      this.getData(index).then((result: Movie[] | undefined) => {
+      this.getData().then((result: Movie[] | undefined) => {
         if (typeof result != "undefined") {
           result.forEach((movie: Movie) => {
             movie.genres.forEach((genre: Genre) => {

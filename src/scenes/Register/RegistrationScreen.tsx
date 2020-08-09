@@ -1,7 +1,6 @@
 import "react-native-gesture-handler";
 import React, { Component } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   Image,

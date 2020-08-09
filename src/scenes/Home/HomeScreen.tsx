@@ -36,12 +36,14 @@ export default class HomeScreen extends Component<
   //when component loads in fetch the data
   componentDidMount() {
     let dataCont = new dataController({});
-    dataCont.getData(1).then((res) =>
-      this.setState({
-        movies: res,
-        moviesLoaded: true,
-      })
-    );
+    dataCont.getData().then((res) => {
+      res
+        ? this.setState({
+            movies: res,
+            moviesLoaded: true,
+          })
+        : alert("no movies found");
+    });
   }
 
   //change the state of the current item on list change
@@ -104,6 +106,7 @@ export default class HomeScreen extends Component<
       <View style={{ flex: 1, backgroundColor: colors.darkblue }}>
         <View style={{ flex: 1 }}>
           <View>
+            {/* indicator */}
             <FlatList<Movie>
               onViewableItemsChanged={this._onViewableItemsChanged}
               data={this.state.movies}
