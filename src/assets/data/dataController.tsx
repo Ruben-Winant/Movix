@@ -32,7 +32,7 @@ export default class dataController extends Component {
   //#region get movie(s)
 
   //returns all movies
-  getAllMovies = async (page: number) => {
+  getAllMovies = async () => {
     //limit result to max x movies
     let movies: Movie[] = [];
     this.getData().then((res) => (movies = res));

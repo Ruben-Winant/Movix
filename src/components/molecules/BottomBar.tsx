@@ -8,61 +8,50 @@ interface BBprops {
   handlePress: Function;
   movie: Movie;
 }
-interface BBstate {}
 
-export default class BottomBar extends Component<BBprops, BBstate> {
-  constructor(props: BBprops) {
-    super(props);
-  }
-
+export default class BottomBar extends Component<BBprops, {}> {
   render() {
     return (
       <View style={styles.bottombar}>
-        <View>
-          <BottomActionButton
-            iconname="times"
-            iconcolor="#BF3B3B"
-            solid={true}
-            flag="DISLIKE"
-            handlePress={this.props.handlePress}
-            movie={this.props.movie}
-          />
-        </View>
+        <BottomActionButton
+          iconname="eye"
+          iconcolor={colors.blue}
+          solid={false}
+          flag="SEEN"
+          handlePress={this.props.handlePress}
+          movie={this.props.movie}
+          size={28}
+        />
 
-        <View>
-          <View style={styles.doubleView}>
-            <BottomActionButton
-              iconname="eye"
-              iconcolor="#468EDC"
-              solid={false}
-              flag="SEEN"
-              handlePress={this.props.handlePress}
-              movie={this.props.movie}
-            />
-          </View>
+        <BottomActionButton
+          iconname="times"
+          iconcolor={colors.red}
+          solid={true}
+          flag="DISLIKE"
+          handlePress={this.props.handlePress}
+          movie={this.props.movie}
+          size={40}
+        />
 
-          <View style={styles.doubleView}>
-            <BottomActionButton
-              iconname="info"
-              iconcolor="#DDDDDD"
-              solid={true}
-              flag="INFO"
-              handlePress={this.props.handlePress}
-              movie={this.props.movie}
-            />
-          </View>
-        </View>
+        <BottomActionButton
+          iconname="heart"
+          iconcolor={colors.lightgreen}
+          solid={true}
+          flag="LIKE"
+          handlePress={this.props.handlePress}
+          movie={this.props.movie}
+          size={40}
+        />
 
-        <View>
-          <BottomActionButton
-            iconname="heart"
-            iconcolor="#49CF97"
-            solid={true}
-            flag="LIKE"
-            handlePress={this.props.handlePress}
-            movie={this.props.movie}
-          />
-        </View>
+        <BottomActionButton
+          iconname="info"
+          iconcolor={colors.blue}
+          solid={true}
+          flag="INFO"
+          handlePress={this.props.handlePress}
+          movie={this.props.movie}
+          size={28}
+        />
       </View>
     );
   }
@@ -76,9 +65,5 @@ const styles = StyleSheet.create({
     marginLeft: 50,
     marginRight: 50,
     alignItems: "center",
-  },
-  doubleView: {
-    flex: 1,
-    justifyContent: "center",
   },
 });

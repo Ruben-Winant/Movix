@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { TouchableHighlight, View, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 interface TAbProps {
   iconname: string;
@@ -9,43 +10,35 @@ interface TAbProps {
 interface TAbState {}
 
 export default class TopActionButton extends Component<TAbProps, TAbState> {
-  stylesheets = StyleSheet.create({
-    actionbtnouter: {
-      justifyContent: "center",
-      borderRadius: 45,
-      padding: "auto",
-      width: 65,
-      height: 65,
-    },
-    actionbtninner: {
-      alignSelf: "center",
-    },
-  });
-
   render() {
     return (
-      <TouchableHighlight
+      <TouchableWithoutFeedback
         style={this.stylesheets.actionbtnouter}
         onPress={() => this.props.actionbtnfunc()}
-        underlayColor="#F0F0F0"
       >
         <View>
           <FontAwesome5
             name={this.props.iconname}
-            size={34}
+            size={28}
             color="white"
             style={this.stylesheets.actionbtninner}
             solid={true}
           />
         </View>
-      </TouchableHighlight>
+      </TouchableWithoutFeedback>
     );
   }
-}
 
-{
-  /* <TopActionButton
-            iconname="user"
-            actionbtnfunc={() => this.onTopActionButtonPressAccount()}
-          /> */
+  stylesheets = StyleSheet.create({
+    actionbtnouter: {
+      justifyContent: "center",
+      borderRadius: 45,
+      padding: "auto",
+      width: 40,
+      height: 40,
+    },
+    actionbtninner: {
+      alignSelf: "center",
+    },
+  });
 }

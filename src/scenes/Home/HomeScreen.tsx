@@ -1,5 +1,5 @@
 import React, { Component, createRef } from "react";
-import { View, FlatList } from "react-native";
+import { View, FlatList, ActivityIndicator, StatusBar } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
 import { Movie } from "../../types/Movie";
@@ -7,6 +7,7 @@ import colors from "../../assets/colors";
 import dataController from "../../assets/data/dataController";
 import { Flags } from "../../types/Flags";
 import { BottomBar, ImageView } from "../../components";
+import { TopBar } from "../../components/molecules/TopBar";
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -103,29 +104,41 @@ export default class HomeScreen extends Component<
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.darkblue }}>
-        <View style={{ flex: 1 }}>
-          <View>
-            {/* indicator */}
-            <FlatList<Movie>
-              onViewableItemsChanged={this._onViewableItemsChanged}
-              data={this.state.movies}
-              renderItem={({ item }) => <ImageView movie={item} />}
-              horizontal
-              pagingEnabled
-              scrollEnabled={false}
-              showsHorizontalScrollIndicator={false}
-              ref={this.flatlistRef}
-              scrollEventThrottle={16}
-            />
-          </View>
+      <View style={{ flex: 1, backgroundColor: colors.dark }}>
+        <StatusBar backgroundColor={colors.dark} />
+        {this.state.moviesLoaded ? (
           <View style={{ flex: 1 }}>
-            <BottomBar
-              movie={this.state.currentFlatlistItem}
-              handlePress={this.moveToNextItem}
-            />
+            <View style={{ flex: 1 }}>
+              <TopBar
+                movie={this.state.currentFlatlistItem}
+                handlePress={() => alert("test")}
+              />
+            </View>
+            <View>
+              <FlatList<Movie>
+                onViewableItemsChanged={this._onViewableItemsChanged}
+                data={this.state.movies}
+                renderItem={({ item }) => <ImageView movie={item} />}
+                horizontal
+                pagingEnabled
+                scrollEnabled={false}
+                showsHorizontalScrollIndicator={false}
+                ref={this.flatlistRef}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <BottomBar
+                movie={this.state.currentFlatlistItem}
+                handlePress={this.moveToNextItem}
+              />
+            </View>
           </View>
-        </View>
+        ) : (
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <ActivityIndicator size={60} />
+          </View>
+        )}
       </View>
     );
   }

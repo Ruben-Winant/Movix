@@ -1,25 +1,17 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Image, Dimensions, Text } from "react-native";
+import { View, StyleSheet, Image, Dimensions } from "react-native";
 import colors from "../../assets/colors";
 import { Movie } from "../../types/Movie";
-import { InfoButton } from "..";
-import { StatusBar } from "expo-status-bar";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import InfoButton from "./InfoButton";
 
 interface IVprops {
   movie: Movie;
 }
-interface IVstate {}
 
-export default class ImageView extends Component<IVprops, IVstate> {
+export default class ImageView extends Component<IVprops, {}> {
   render() {
     return (
       <View style={styles.imageOuter}>
-        <StatusBar
-          translucent={false}
-          hidden={false}
-          backgroundColor={colors.darkblue}
-        />
         <Image
           style={styles.imageInner}
           source={{ uri: this.props.movie.posterpath }}
@@ -32,27 +24,21 @@ export default class ImageView extends Component<IVprops, IVstate> {
   }
 }
 
+const deviceWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
   imageOuter: {
     flex: 1,
     flexDirection: "column",
+    width: deviceWidth * 0.8,
+    height: Dimensions.get("window").height * 0.7,
+    marginLeft: (deviceWidth * 0.2) / 2,
+    marginRight: (deviceWidth * 0.2) / 2,
   },
   imageInner: {
-    alignSelf: "center",
     borderRadius: 15,
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height * 0.77,
     backgroundColor: "transparent",
-  },
-  movieInfoTitle: {
-    color: colors.white,
-    fontSize: 40,
-    fontWeight: "bold",
-  },
-  movieInfoSub: {
-    color: colors.white,
-    fontSize: 28,
-    fontWeight: "bold",
+    width: "100%",
+    height: "100%",
   },
   movieInfo: {
     backgroundColor: "rgba(56,56,56,0)",

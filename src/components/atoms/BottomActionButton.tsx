@@ -1,27 +1,21 @@
 import React, { Component } from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { TouchableHighlight, View, StyleSheet } from "react-native";
+import { TouchableHighlight, StyleSheet, View } from "react-native";
 import { Flags } from "../../types/Flags";
 import { Movie } from "../../types/Movie";
+import colors from "../../assets/colors";
 
 interface BAbProps {
   iconname: string;
   iconcolor: string;
   solid: boolean;
+  size: number;
   flag: Flags;
   handlePress: Function;
   movie: Movie;
 }
-interface BAbState {}
 
-export default class BottomActionButton extends Component<BAbProps, BAbState> {
-  constructor(props: BAbProps) {
-    super(props);
-    this.state = {
-      curPos: 0,
-    };
-  }
-
+export default class BottomActionButton extends Component<BAbProps, {}> {
   _onButtonPressed = () => {
     this.props.handlePress(this.props.flag, this.props.movie);
   };
@@ -33,12 +27,12 @@ export default class BottomActionButton extends Component<BAbProps, BAbState> {
         onPress={() => {
           this._onButtonPressed();
         }}
-        underlayColor={this.props.iconcolor}
+        underlayColor={colors.darker}
       >
         <View>
           <FontAwesome5
             name={this.props.iconname}
-            size={36}
+            size={this.props.size}
             color={this.props.iconcolor}
             style={this.stylesheets.actionbtninner}
             solid={this.props.solid}
@@ -51,12 +45,12 @@ export default class BottomActionButton extends Component<BAbProps, BAbState> {
   stylesheets = StyleSheet.create({
     actionbtnouter: {
       justifyContent: "center",
-      borderColor: this.props.iconcolor,
-      borderWidth: 6,
       borderRadius: 45,
       padding: "auto",
-      width: 65,
-      height: 65,
+      width: this.props.size * 1.65,
+      height: this.props.size * 1.65,
+      backgroundColor: colors.lightdark,
+      elevation: 5,
     },
     actionbtninner: {
       alignSelf: "center",
