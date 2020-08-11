@@ -5,6 +5,8 @@ import {
   ActivityIndicator,
   StatusBar,
   Text,
+  Modal,
+  ScrollView,
 } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
@@ -12,8 +14,11 @@ import { Movie } from "../../types/Movie";
 import colors from "../../assets/colors";
 import dataController from "../../assets/data/dataController";
 import { Flags } from "../../types/Flags";
+import { GenreList } from "../../types/GenreList";
 import { BottomBar, ImageView } from "../../components";
 import { TopBar } from "../../components/molecules/TopBar";
+import { Genre } from "../../types/Genre";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -24,6 +29,8 @@ interface HomeScreenState {
   moviesLoaded: boolean;
   listPos: number;
   currentFlatlistItem: Movie;
+  genre: string;
+  modalVisible: boolean;
 }
 
 export default class HomeScreen extends Component<
@@ -37,6 +44,8 @@ export default class HomeScreen extends Component<
       moviesLoaded: false,
       listPos: 0,
       currentFlatlistItem: null,
+      genre: "All",
+      modalVisible: false,
     };
   }
 
@@ -52,6 +61,8 @@ export default class HomeScreen extends Component<
         : alert("no movies found");
     });
   }
+
+  //#region flatlist
 
   //change the state of the current item on list change
   _onViewableItemsChanged = ({ viewableItems }: any) => {
@@ -108,16 +119,68 @@ export default class HomeScreen extends Component<
       : console.log("Something went wrong");
   };
 
+  //#endregion
+
+  FilterMovies = (genre: string) => {
+    let fmovies: Movie[] = this.state.movies.filter((movie) => {
+      let data = movie.genres.some((item) => item.name === genre);
+      return data;
+    });
+
+    this.setState({
+      movies: fmovies,
+    });
+  };
+
+  MakeGenreButtonList = () => {
+    let genreButtons: any[] = [];
+    GenreList.forEach((genre) => {
+      let color = genre === this.state.genre ? colors.blue : colors.white;
+      genreButtons.push(
+        <Text
+          onPress={() => {
+            this.setState({ modalVisible: !this.state.modalVisible });
+            this.setState({ genre: genre });
+            this.FilterMovies(genre);
+          }}
+          style={{
+            textAlign: "center",
+            color: color,
+            fontSize: 28,
+            width: 180,
+            marginBottom: 15,
+            marginTop: 15,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          {genre}
+        </Text>
+      );
+    });
+    let result = (
+      <ScrollView style={{ marginTop: 30, marginBottom: 30 }}>
+        {genreButtons}
+      </ScrollView>
+    );
+    return result;
+  };
+
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: colors.dark }}>
-        <StatusBar backgroundColor={colors.dark} />
+        <StatusBar backgroundColor={colors.dark} animated={true} />
         {this.state.moviesLoaded ? (
           <View style={{ flex: 1 }}>
             <View style={{ flex: 1 }}>
               <TopBar
                 movie={this.state.currentFlatlistItem}
-                handlePress={() => alert("test")}
+                handlePress={() =>
+                  this.setState({
+                    modalVisible: true,
+                  })
+                }
+                genre={this.state.genre}
               />
             </View>
             <View>
@@ -139,6 +202,17 @@ export default class HomeScreen extends Component<
                 handlePress={this.moveToNextItem}
               />
             </View>
+            <Modal animationType="slide" visible={this.state.modalVisible}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "space-around",
+                  backgroundColor: colors.dark,
+                }}
+              >
+                {this.MakeGenreButtonList()}
+              </View>
+            </Modal>
           </View>
         ) : (
           <View

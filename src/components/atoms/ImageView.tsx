@@ -29,10 +29,10 @@ const styles = StyleSheet.create({
   imageOuter: {
     flex: 1,
     flexDirection: "column",
-    width: deviceWidth * 0.82,
-    height: Dimensions.get("window").height * 0.74,
-    marginLeft: (deviceWidth * 0.18) / 2,
-    marginRight: (deviceWidth * 0.18) / 2,
+    width: deviceWidth * 0.9,
+    height: Dimensions.get("window").height * 0.7,
+    marginLeft: (deviceWidth * 0.1) / 2,
+    marginRight: (deviceWidth * 0.1) / 2,
   },
   imageInner: {
     borderRadius: 15,

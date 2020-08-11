@@ -1,72 +1,87 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  TouchableHighlight,
+} from "react-native";
 import { Movie } from "../../types/Movie";
 import TopActionButton from "../atoms/TopActionButton";
 import { firebase } from "./../../../src/firebase/firebaseConfig";
 import colors from "../../assets/colors";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import { Genre } from "../../types/Genre";
 
 interface topBarProps {
   handlePress: Function;
   movie: Movie;
+  genre: string;
 }
 
-export const TopBar = ({ handlePress, movie }: topBarProps) => {
+export const TopBar = ({ handlePress, movie, genre }: topBarProps) => {
   const styles = StyleSheet.create({
     filterbutton: {
       justifyContent: "center",
-      borderRadius: 45,
       padding: "auto",
     },
     filterbuttoncontainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-around",
       width: 90,
       backgroundColor: colors.lightdark,
       paddingLeft: 10,
       paddingRight: 10,
       paddingTop: 4,
       paddingBottom: 4,
+      elevation: 5,
       borderRadius: 45,
-      elevation: 36,
     },
   });
-
   return (
     <View
       style={{
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "space-evenly",
         alignItems: "center",
-        marginLeft: 40,
-        marginRight: 40,
-        marginTop: 8,
+        margin: 20,
       }}
     >
-      <TouchableWithoutFeedback>
-        <View style={styles.filterbuttoncontainer}>
-          <Text style={{ color: colors.white, fontSize: 17 }}>Filter</Text>
+      <TouchableHighlight
+        onPress={() => handlePress()}
+        underlayColor={colors.darker}
+        style={styles.filterbuttoncontainer}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-around",
+          }}
+        >
+          <Text style={{ color: colors.white, fontSize: 17 }}>Genre </Text>
           <FontAwesome5Icon
             name="filter"
-            size={16}
+            size={14}
             color="white"
             solid={true}
             style={styles.filterbutton}
           />
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableHighlight>
       <Text
         style={{
           color: colors.white,
           fontSize: 17,
-          overflow: "scroll",
           width: 180,
+          marginLeft: "8%",
         }}
       >
-        genre comes here
+        {genre}
       </Text>
-      <TopActionButton actionbtnfunc={handlePress} iconname="user" />
+
+      <TopActionButton
+        actionbtnfunc={() => alert("user's profile")}
+        iconname="user"
+      />
     </View>
   );
 };
