@@ -19,7 +19,7 @@ export default class TopActionButton extends Component<TAbProps, TAbState> {
         <View>
           <FontAwesome5
             name={this.props.iconname}
-            size={28}
+            size={24}
             color="white"
             style={this.stylesheets.actionbtninner}
             solid={true}

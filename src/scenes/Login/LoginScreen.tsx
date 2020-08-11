@@ -56,7 +56,7 @@ export default class LoginScreen extends Component<
                 return;
               }
               const user = firestoreDocument.data();
-              this.props.navigation.navigate("Home", { user });
+              this.props.navigation.navigate("Home", { user: user });
             })
             .catch((error) => {
               alert(error);

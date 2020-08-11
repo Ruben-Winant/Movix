@@ -6,7 +6,6 @@ import { createStackNavigator } from "react-navigation-stack";
 import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
 import { firebase } from "./src/firebase/firebaseConfig";
-import { Movie } from "./src/types/Movie";
 import colors from "./src/assets/colors";
 
 interface AppProps {}

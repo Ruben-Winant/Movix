@@ -1,5 +1,11 @@
 import React, { Component, createRef } from "react";
-import { View, FlatList, ActivityIndicator, StatusBar } from "react-native";
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  StatusBar,
+  Text,
+} from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
 import { Movie } from "../../types/Movie";
@@ -127,7 +133,7 @@ export default class HomeScreen extends Component<
                 keyExtractor={(item) => item.id.toString()}
               />
             </View>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, marginBottom: 18, marginTop: 18 }}>
               <BottomBar
                 movie={this.state.currentFlatlistItem}
                 handlePress={this.moveToNextItem}
@@ -135,8 +141,24 @@ export default class HomeScreen extends Component<
             </View>
           </View>
         ) : (
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            <ActivityIndicator size={60} />
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size={100} />
+            <Text
+              style={{
+                color: colors.white,
+                fontSize: 24,
+                width: "60%",
+                textAlign: "center",
+              }}
+            >
+              Loading your next favorite movies
+            </Text>
           </View>
         )}
       </View>
