@@ -49,10 +49,11 @@ export default class HomeScreen extends Component<
     };
   }
 
+  private dataCont = new dataController({});
+
   //when component loads in fetch the data
   componentDidMount() {
-    let dataCont = new dataController({});
-    dataCont.getData().then((res) => {
+    this.dataCont.getData().then((res) => {
       res
         ? this.setState({
             movies: res,
@@ -105,7 +106,7 @@ export default class HomeScreen extends Component<
 
     //navigate to info page
     let onPressedInfo = () => {
-      alert("gathering info about " + movie.title);
+      alert("gathering info about " + movie.title + " " + movie.genres[0].name);
     };
 
     flag === "DISLIKE"
@@ -122,13 +123,40 @@ export default class HomeScreen extends Component<
   //#endregion
 
   FilterMovies = (genre: string) => {
+    if (genre === "All") {
+      this.setState({ moviesLoaded: false });
+      this.dataCont.getData().then((res) => {
+        res
+          ? this.setState({
+              movies: res,
+              moviesLoaded: true,
+            })
+          : alert("no movies found");
+      });
+      return;
+    }
+
     let fmovies: Movie[] = this.state.movies.filter((movie) => {
-      let data = movie.genres.some((item) => item.name === genre);
+      let genreObj;
+      movie.genres != null || typeof movie.genres !== "undefined"
+        ? (genreObj = Object.values(movie.genres))
+        : null;
+      let genreNames: string[] = [];
+
+      genreObj != null || typeof genreObj !== "undefined"
+        ? genreObj?.forEach((genre) => {
+            genreNames.push(genre.name);
+          })
+        : null;
+
+      let data = genreNames.some((item) => item === genre);
       return data;
     });
 
+    this.setState({ moviesLoaded: false });
     this.setState({
       movies: fmovies,
+      moviesLoaded: true,
     });
   };
 
@@ -138,6 +166,7 @@ export default class HomeScreen extends Component<
       let color = genre === this.state.genre ? colors.blue : colors.white;
       genreButtons.push(
         <Text
+          key={genre}
           onPress={() => {
             this.setState({ modalVisible: !this.state.modalVisible });
             this.setState({ genre: genre });
@@ -172,6 +201,7 @@ export default class HomeScreen extends Component<
         <StatusBar backgroundColor={colors.dark} animated={true} />
         {this.state.moviesLoaded ? (
           <View style={{ flex: 1 }}>
+            {/* top bar */}
             <View style={{ flex: 1 }}>
               <TopBar
                 movie={this.state.currentFlatlistItem}
@@ -183,6 +213,7 @@ export default class HomeScreen extends Component<
                 genre={this.state.genre}
               />
             </View>
+            {/* movies list */}
             <View>
               <FlatList<Movie>
                 onViewableItemsChanged={this._onViewableItemsChanged}
@@ -202,6 +233,7 @@ export default class HomeScreen extends Component<
                 handlePress={this.moveToNextItem}
               />
             </View>
+            {/* modal for choosing genre filter */}
             <Modal animationType="slide" visible={this.state.modalVisible}>
               <View
                 style={{
@@ -210,7 +242,7 @@ export default class HomeScreen extends Component<
                   backgroundColor: colors.dark,
                 }}
               >
-                {this.MakeGenreButtonList()}
+                <View>{this.MakeGenreButtonList()}</View>
               </View>
             </Modal>
           </View>
