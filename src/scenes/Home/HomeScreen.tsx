@@ -7,6 +7,7 @@ import {
   Text,
   Modal,
   ScrollView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
@@ -17,8 +18,7 @@ import { Flags } from "../../types/Flags";
 import { GenreList } from "../../types/GenreList";
 import { BottomBar, ImageView } from "../../components";
 import { TopBar } from "../../components/molecules/TopBar";
-import { Genre } from "../../types/Genre";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -122,6 +122,7 @@ export default class HomeScreen extends Component<
 
   //#endregion
 
+  //#region modal
   FilterMovies = (genre: string) => {
     if (genre === "All") {
       this.setState({ moviesLoaded: false });
@@ -136,27 +137,33 @@ export default class HomeScreen extends Component<
       return;
     }
 
-    let fmovies: Movie[] = this.state.movies.filter((movie) => {
-      let genreObj;
-      movie.genres != null || typeof movie.genres !== "undefined"
-        ? (genreObj = Object.values(movie.genres))
-        : null;
-      let genreNames: string[] = [];
-
-      genreObj != null || typeof genreObj !== "undefined"
-        ? genreObj?.forEach((genre) => {
-            genreNames.push(genre.name);
-          })
-        : null;
-
-      let data = genreNames.some((item) => item === genre);
-      return data;
-    });
-
     this.setState({ moviesLoaded: false });
-    this.setState({
-      movies: fmovies,
-      moviesLoaded: true,
+    this.dataCont.getData().then((res) => {
+      try {
+        let fmovies: Movie[] = res.filter((movie) => {
+          let genreObj;
+          movie.genres != null || typeof movie.genres !== "undefined"
+            ? (genreObj = Object.values(movie.genres))
+            : null;
+          let genreNames: string[] = [];
+
+          genreObj != null || typeof genreObj !== "undefined"
+            ? genreObj?.forEach((genre) => {
+                genreNames.push(genre.name);
+              })
+            : null;
+
+          let data = genreNames.some((item) => item === genre);
+          return data;
+        });
+        this.setState({ moviesLoaded: false });
+        this.setState({
+          movies: fmovies,
+          moviesLoaded: true,
+        });
+      } catch (error) {
+        console.error(error.message);
+      }
     });
   };
 
@@ -188,12 +195,17 @@ export default class HomeScreen extends Component<
       );
     });
     let result = (
-      <ScrollView style={{ marginTop: 30, marginBottom: 30 }}>
+      <ScrollView
+        persistentScrollbar={true}
+        style={{ marginTop: 30, marginBottom: 30 }}
+        indicatorStyle="white"
+      >
         {genreButtons}
       </ScrollView>
     );
     return result;
   };
+  //#endregion
 
   render() {
     return (
@@ -227,6 +239,7 @@ export default class HomeScreen extends Component<
                 keyExtractor={(item) => item.id.toString()}
               />
             </View>
+            {/* bottom bar */}
             <View style={{ flex: 1, marginBottom: 18, marginTop: 18 }}>
               <BottomBar
                 movie={this.state.currentFlatlistItem}
@@ -234,7 +247,7 @@ export default class HomeScreen extends Component<
               />
             </View>
             {/* modal for choosing genre filter */}
-            <Modal animationType="slide" visible={this.state.modalVisible}>
+            <Modal animationType="fade" visible={this.state.modalVisible}>
               <View
                 style={{
                   flex: 1,
@@ -242,7 +255,32 @@ export default class HomeScreen extends Component<
                   backgroundColor: colors.dark,
                 }}
               >
-                <View>{this.MakeGenreButtonList()}</View>
+                <View
+                  style={{
+                    position: "absolute",
+                    marginLeft: 25,
+                    marginTop: 25,
+                    zIndex: 99,
+                    padding: 10,
+                  }}
+                >
+                  <TouchableWithoutFeedback
+                    onPress={() =>
+                      this.setState({
+                        modalVisible: !this.state.modalVisible,
+                      })
+                    }
+                    style={{ padding: 5 }}
+                  >
+                    <FontAwesome5Icon
+                      name="chevron-left"
+                      size={34}
+                      color={colors.white}
+                    />
+                  </TouchableWithoutFeedback>
+                </View>
+
+                {this.MakeGenreButtonList()}
               </View>
             </Modal>
           </View>
