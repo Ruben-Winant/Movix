@@ -8,6 +8,8 @@ import {
   Modal,
   ScrollView,
   TouchableWithoutFeedback,
+  Dimensions,
+  StyleSheet,
 } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
@@ -30,7 +32,7 @@ interface HomeScreenState {
   listPos: number;
   currentFlatlistItem: Movie;
   genre: string;
-  modalVisible: boolean;
+  genreModalVisible: boolean;
 }
 
 export default class HomeScreen extends Component<
@@ -61,10 +63,12 @@ export default class HomeScreen extends Component<
           })
         : alert("no movies found");
     });
+    this.setState({
+      genreModalVisible: false,
+    });
   }
 
   //#region flatlist
-
   //change the state of the current item on list change
   _onViewableItemsChanged = ({ viewableItems }: any) => {
     //.key = movie id
@@ -106,7 +110,9 @@ export default class HomeScreen extends Component<
 
     //navigate to info page
     let onPressedInfo = () => {
-      alert("gathering info about " + movie.title + " " + movie.genres[0].name);
+      this.setState({
+        movieInfoModalVisible: !this.state.movieInfoModalVisible,
+      });
     };
 
     flag === "DISLIKE"
@@ -122,7 +128,7 @@ export default class HomeScreen extends Component<
 
   //#endregion
 
-  //#region modal
+  //#region genre menu modal
   FilterMovies = (genre: string) => {
     if (genre === "All") {
       this.setState({ moviesLoaded: false });
@@ -175,7 +181,7 @@ export default class HomeScreen extends Component<
         <Text
           key={genre}
           onPress={() => {
-            this.setState({ modalVisible: !this.state.modalVisible });
+            this.setState({ genreModalVisible: !this.state.genreModalVisible });
             this.setState({ genre: genre });
             this.FilterMovies(genre);
           }}
@@ -219,7 +225,7 @@ export default class HomeScreen extends Component<
                 movie={this.state.currentFlatlistItem}
                 handlePress={() =>
                   this.setState({
-                    modalVisible: true,
+                    genreModalVisible: !this.state.genreModalVisible,
                   })
                 }
                 genre={this.state.genre}
@@ -247,7 +253,7 @@ export default class HomeScreen extends Component<
               />
             </View>
             {/* modal for choosing genre filter */}
-            <Modal animationType="fade" visible={this.state.modalVisible}>
+            <Modal animationType="fade" visible={this.state.genreModalVisible}>
               <View
                 style={{
                   flex: 1,
@@ -267,7 +273,7 @@ export default class HomeScreen extends Component<
                   <TouchableWithoutFeedback
                     onPress={() =>
                       this.setState({
-                        modalVisible: !this.state.modalVisible,
+                        genreModalVisible: !this.state.genreModalVisible,
                       })
                     }
                     style={{ padding: 5 }}
@@ -308,4 +314,20 @@ export default class HomeScreen extends Component<
       </View>
     );
   }
+
+  private deviceWidth = Dimensions.get("window").width;
+  private styles = StyleSheet.create({
+    movieInfoModalOuter: {
+      flex: 1,
+      flexDirection: "column",
+      width: this.deviceWidth * 0.9,
+      height: Dimensions.get("window").height * 0.7,
+      marginLeft: (this.deviceWidth * 0.1) / 2,
+      marginRight: (this.deviceWidth * 0.1) / 2,
+      zIndex: 99,
+      backgroundColor: colors.white,
+      maxHeight: Dimensions.get("window").height * 0.7,
+      borderRadius: 15,
+    },
+  });
 }

@@ -3,7 +3,9 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { View, StyleSheet } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
-interface IbProps {}
+interface IbProps {
+  handleClick: Function;
+}
 interface IbState {}
 
 export default class InfoButton extends Component<IbProps, IbState> {
@@ -11,7 +13,7 @@ export default class InfoButton extends Component<IbProps, IbState> {
     return (
       <TouchableWithoutFeedback
         style={stylesheets.infoButtonOutter}
-        onPress={() => alert("test")}
+        onPress={() => this.props.handleClick()}
       >
         <View>
           <FontAwesome5
