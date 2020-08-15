@@ -54,7 +54,9 @@ export default class ImageView extends Component<IVprops, IVstate> {
     }
   }
 
-  deviceWidth = Dimensions.get("window").width;
+  //#region movie details funcitons
+
+  private deviceWidth = Dimensions.get("window").width;
 
   movieImg = (blur: number, abs: boolean) => {
     let result = (
@@ -159,6 +161,8 @@ export default class ImageView extends Component<IVprops, IVstate> {
     );
   };
 
+  //#endregion
+
   render() {
     return (
       <View style={this.styles.imageOuter}>
@@ -243,7 +247,6 @@ export default class ImageView extends Component<IVprops, IVstate> {
                 </View>
               </ScrollView>
             </View>
-
             {/* Infobutton toggle */}
             <View style={{ ...this.styles.movieInfo, zIndex: 99 }}>
               <InfoButton
