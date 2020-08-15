@@ -14,16 +14,6 @@ export default class BottomBar extends Component<BBprops, {}> {
     return (
       <View style={styles.bottombar}>
         <BottomActionButton
-          iconname="eye"
-          iconcolor={colors.blue}
-          solid={false}
-          flag="SEEN"
-          handlePress={this.props.handlePress}
-          movie={this.props.movie}
-          size={28}
-        />
-
-        <BottomActionButton
           iconname="times"
           iconcolor={colors.red}
           solid={true}
@@ -31,6 +21,16 @@ export default class BottomBar extends Component<BBprops, {}> {
           handlePress={this.props.handlePress}
           movie={this.props.movie}
           size={40}
+        />
+
+        <BottomActionButton
+          iconname="eye"
+          iconcolor={colors.blue}
+          solid={false}
+          flag="SEEN"
+          handlePress={this.props.handlePress}
+          movie={this.props.movie}
+          size={28}
         />
 
         <BottomActionButton
@@ -43,7 +43,7 @@ export default class BottomBar extends Component<BBprops, {}> {
           size={40}
         />
 
-        <BottomActionButton
+        {/* <BottomActionButton
           iconname="info"
           iconcolor={colors.blue}
           solid={true}
@@ -51,7 +51,7 @@ export default class BottomBar extends Component<BBprops, {}> {
           handlePress={this.props.handlePress}
           movie={this.props.movie}
           size={28}
-        />
+        /> */}
       </View>
     );
   }

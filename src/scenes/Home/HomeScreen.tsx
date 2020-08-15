@@ -96,24 +96,11 @@ export default class HomeScreen extends Component<
     };
 
     //mark movie as flag
-    let onPressedSeen = () => {
-      alert("seen " + movie.title);
-    };
+    let onPressedSeen = () => {};
 
-    let onPressedDisliked = () => {
-      alert("dislike " + movie.title);
-    };
+    let onPressedDisliked = () => {};
 
-    let onPressedLiked = () => {
-      alert("liked " + movie.title);
-    };
-
-    //navigate to info page
-    let onPressedInfo = () => {
-      this.setState({
-        movieInfoModalVisible: !this.state.movieInfoModalVisible,
-      });
-    };
+    let onPressedLiked = () => {};
 
     flag === "DISLIKE"
       ? (onPressedDisliked(), next())
@@ -121,8 +108,6 @@ export default class HomeScreen extends Component<
       ? (onPressedSeen(), next())
       : flag === "LIKE"
       ? (onPressedLiked(), next())
-      : flag === "INFO"
-      ? onPressedInfo()
       : console.log("Something went wrong");
   };
 

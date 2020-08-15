@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import "react-native-gesture-handler";
 import { Movie } from "../../types/Movie";
-import AsyncStorage from "@react-native-community/async-storage";
 import { Genre } from "../../types/Genre";
 import { firebase } from "./../../../src/firebase/firebaseConfig";
+import { MovieVideo, MovieResult } from "../../types/MovieVideo";
 
 export default class dataController extends Component {
   constructor(props: any) {
