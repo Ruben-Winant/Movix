@@ -12,6 +12,7 @@ import { NavigationStackProp } from "react-navigation-stack";
 import styles from "./styles";
 import { firebase } from "../../firebase/firebaseConfig";
 import colors from "../../assets/colors";
+import { UserProfile } from "..";
 
 interface LoginScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -88,6 +89,14 @@ export default class RegistrationScreen extends Component<
           .doc(uid)
           .set(data)
           .then(() => {
+            let user = firebase.auth().currentUser;
+            user
+              ? user
+                  .updateProfile({
+                    displayName: this.state.fullName,
+                  })
+                  .catch((error) => console.error(error.message))
+              : null;
             this.props.navigation.navigate("Home", { user: data });
           })
           .catch((error) => {

@@ -201,7 +201,7 @@ export default class ImageView extends Component<IVprops, IVstate> {
               </Text>
 
               {/* Movie details */}
-              <ScrollView indicatorStyle="white">
+              <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={this.styles.movieInfoDetailsBlock}>
                   <Text style={this.styles.movieInfoDetailsText}>
                     Released:
@@ -216,6 +216,14 @@ export default class ImageView extends Component<IVprops, IVstate> {
                     {this.CalcRuntime(
                       Number.parseInt(this.props.movie.runtime)
                     )}
+                  </Text>
+                </View>
+                <View style={this.styles.movieInfoDetailsBlock}>
+                  <Text style={this.styles.movieInfoDetailsText}>
+                    Avg. rating:
+                  </Text>
+                  <Text style={this.styles.movieInfoDetailsText}>
+                    {this.props.movie.vote_average * 10 + "%"}
                   </Text>
                 </View>
                 <View>
@@ -233,7 +241,9 @@ export default class ImageView extends Component<IVprops, IVstate> {
                   </Text>
                 </View>
                 <View>
-                  <Text style={this.styles.movieInfoDetailsText}>Link(s):</Text>
+                  <Text style={this.styles.movieInfoDetailsText}>
+                    Trailer & extra's:
+                  </Text>
                   <View
                     style={{
                       margin: 4,

@@ -15,18 +15,21 @@ import { Genre } from "../../types/Genre";
 
 interface topBarProps {
   handlePress: Function;
-  movie: Movie;
+  handleUserButtonPress: Function;
   genre: string;
 }
 
-export const TopBar = ({ handlePress, movie, genre }: topBarProps) => {
+export const TopBar = ({
+  handlePress,
+  genre,
+  handleUserButtonPress,
+}: topBarProps) => {
   const styles = StyleSheet.create({
     filterbutton: {
       justifyContent: "center",
       padding: "auto",
     },
     filterbuttoncontainer: {
-      width: 90,
       backgroundColor: colors.lightdark,
       paddingLeft: 10,
       paddingRight: 10,
@@ -36,15 +39,17 @@ export const TopBar = ({ handlePress, movie, genre }: topBarProps) => {
       borderRadius: 45,
     },
   });
+
   return (
     <View
       style={{
         flexDirection: "row",
-        justifyContent: "space-evenly",
+        justifyContent: "space-between",
         alignItems: "center",
         margin: 20,
       }}
     >
+      {/* genre's section */}
       <TouchableHighlight
         onPress={() => handlePress()}
         underlayColor={colors.darker}
@@ -57,7 +62,9 @@ export const TopBar = ({ handlePress, movie, genre }: topBarProps) => {
             justifyContent: "space-around",
           }}
         >
-          <Text style={{ color: colors.white, fontSize: 17 }}>Genre </Text>
+          <Text style={{ color: colors.white, fontSize: 17 }}>
+            {genre ? genre : "genre"}{" "}
+          </Text>
           <FontAwesome5Icon
             name="filter"
             size={14}
@@ -67,19 +74,10 @@ export const TopBar = ({ handlePress, movie, genre }: topBarProps) => {
           />
         </View>
       </TouchableHighlight>
-      <Text
-        style={{
-          color: colors.white,
-          fontSize: 17,
-          width: 180,
-          marginLeft: "8%",
-        }}
-      >
-        {genre}
-      </Text>
 
+      {/* User menu button */}
       <TopActionButton
-        actionbtnfunc={() => alert("user's profile")}
+        actionbtnfunc={() => handleUserButtonPress()}
         iconname="user"
       />
     </View>

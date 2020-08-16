@@ -8,8 +8,6 @@ import {
   Modal,
   ScrollView,
   TouchableWithoutFeedback,
-  Dimensions,
-  StyleSheet,
 } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
@@ -207,28 +205,34 @@ export default class HomeScreen extends Component<
             {/* top bar */}
             <View style={{ flex: 1 }}>
               <TopBar
-                movie={this.state.currentFlatlistItem}
                 handlePress={() =>
                   this.setState({
                     genreModalVisible: !this.state.genreModalVisible,
                   })
+                }
+                handleUserButtonPress={() =>
+                  this.props.navigation.navigate("UserProfile")
                 }
                 genre={this.state.genre}
               />
             </View>
             {/* movies list */}
             <View>
-              <FlatList<Movie>
-                onViewableItemsChanged={this._onViewableItemsChanged}
-                data={this.state.movies}
-                renderItem={({ item }) => <ImageView movie={item} />}
-                horizontal
-                pagingEnabled
-                scrollEnabled={false}
-                showsHorizontalScrollIndicator={false}
-                ref={this.flatlistRef}
-                keyExtractor={(item) => item.id.toString()}
-              />
+              {this.state.movies ? (
+                <FlatList<Movie>
+                  onViewableItemsChanged={this._onViewableItemsChanged}
+                  data={this.state.movies}
+                  renderItem={({ item }) => <ImageView movie={item} />}
+                  horizontal
+                  pagingEnabled
+                  scrollEnabled={false}
+                  showsHorizontalScrollIndicator={false}
+                  ref={this.flatlistRef}
+                  keyExtractor={(item) => item.id.toString()}
+                />
+              ) : (
+                <Text>No movies found</Text>
+              )}
             </View>
             {/* bottom bar */}
             <View style={{ flex: 1, marginBottom: 18, marginTop: 18 }}>
@@ -299,20 +303,4 @@ export default class HomeScreen extends Component<
       </View>
     );
   }
-
-  private deviceWidth = Dimensions.get("window").width;
-  private styles = StyleSheet.create({
-    movieInfoModalOuter: {
-      flex: 1,
-      flexDirection: "column",
-      width: this.deviceWidth * 0.9,
-      height: Dimensions.get("window").height * 0.7,
-      marginLeft: (this.deviceWidth * 0.1) / 2,
-      marginRight: (this.deviceWidth * 0.1) / 2,
-      zIndex: 99,
-      backgroundColor: colors.white,
-      maxHeight: Dimensions.get("window").height * 0.7,
-      borderRadius: 15,
-    },
-  });
 }

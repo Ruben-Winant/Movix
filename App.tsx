@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { HomeScreen, LoginScreen, RegistrationScreen } from "./src/scenes";
+import {
+  HomeScreen,
+  LoginScreen,
+  RegistrationScreen,
+  UserProfile,
+} from "./src/scenes";
 import "react-native-gesture-handler";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
@@ -81,6 +86,10 @@ const AppNavigator = createStackNavigator(
     },
     Register: {
       screen: RegistrationScreen,
+    },
+    UserProfile: {
+      screen: UserProfile,
+      navigationOptions: { animationEnabled: false },
     },
   },
   {
