@@ -13,6 +13,7 @@ import styles from "./styles";
 import { firebase } from "../../firebase/firebaseConfig";
 import colors from "../../assets/colors";
 import { UserProfile } from "..";
+import MovixLogo from "../../assets/images/MovixLogo";
 
 interface LoginScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -112,14 +113,11 @@ export default class RegistrationScreen extends Component<
     return (
       <View style={styles.container}>
         <View style={{ flex: 1, width: "100%" }}>
-          <Image
-            style={styles.logo}
-            source={require("../../../src/assets/images/RwLogo.png")}
-          />
+          <MovixLogo height={350} />
           <TextInput
             style={styles.input}
             placeholder="Username"
-            placeholderTextColor={colors.grey}
+            placeholderTextColor={colors.white}
             onChangeText={(text) => this.setFullName(text)}
             underlineColorAndroid="transparent"
             autoCapitalize="none"
@@ -127,14 +125,14 @@ export default class RegistrationScreen extends Component<
           <TextInput
             style={styles.input}
             placeholder="E-mail"
-            placeholderTextColor={colors.grey}
+            placeholderTextColor={colors.white}
             onChangeText={(text) => this.setEmail(text)}
             underlineColorAndroid="transparent"
             autoCapitalize="none"
           />
           <TextInput
             style={styles.input}
-            placeholderTextColor={colors.grey}
+            placeholderTextColor={colors.white}
             secureTextEntry
             placeholder="Password"
             onChangeText={(text) => this.setPassword(text)}
@@ -143,7 +141,7 @@ export default class RegistrationScreen extends Component<
           />
           <TextInput
             style={styles.input}
-            placeholderTextColor={colors.grey}
+            placeholderTextColor={colors.white}
             secureTextEntry
             placeholder="Confirm Password"
             onChangeText={(text) => this.setConfirmPassword(text)}

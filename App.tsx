@@ -89,6 +89,7 @@ const AppNavigator = createStackNavigator(
     },
     UserProfile: {
       screen: UserProfile,
+      params: { user: firebase.auth().currentUser },
       navigationOptions: { animationEnabled: false },
     },
   },

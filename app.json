@@ -4,11 +4,11 @@
     "slug": "Movix",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/RwLogo.png",
+    "icon": "./src/assets/images/Movix_logo.png",
     "splash": {
-      "image": "./src/assets/images/RwLogo.png",
+      "image": "./src/assets/images/Movix_logo_Title.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#313333"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -20,7 +20,7 @@
       "supportsTablet": true
     },
     "web": {
-      "favicon": "./src/assets/images/RwLogo.png"
+      "favicon": "./src/assets/images/Movix_logo.png"
     }
   }
 }

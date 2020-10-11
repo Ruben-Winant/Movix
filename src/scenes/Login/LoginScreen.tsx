@@ -12,6 +12,7 @@ import { NavigationStackProp } from "react-navigation-stack";
 import styles from "./styles";
 import colors from "../../assets/colors";
 import { firebase } from "../../firebase/firebaseConfig";
+import MovixLogo from "../../assets/images/MovixLogo";
 
 interface LoginScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -76,21 +77,18 @@ export default class LoginScreen extends Component<
     return (
       <View style={styles.container}>
         <View style={{ flex: 1, width: "100%" }}>
-          <Image
-            style={styles.logo}
-            source={require("../../../src/assets/images/RwLogo.png")}
-          />
+          <MovixLogo height={350} />
           <TextInput
             style={styles.input}
             placeholder="E-mail"
-            placeholderTextColor={colors.grey}
+            placeholderTextColor={colors.white}
             onChangeText={(text) => this.setEmail(text)}
             underlineColorAndroid="transparent"
             autoCapitalize="none"
           />
           <TextInput
             style={styles.input}
-            placeholderTextColor={colors.grey}
+            placeholderTextColor={colors.white}
             secureTextEntry
             placeholder="Password"
             onChangeText={(text) => this.setPassword(text)}

@@ -1,6 +1,6 @@
 enum colors {
-  darkblue = "#496e7a",
-  lightblue = "#3E6E7e",
+  darkblue = "#23838e",
+  lightblue = "#2ac6d8",
   darkgrey = "#84A9AC",
   lightgrey = "#CAE8D5",
   white = "#F0F0F0",
@@ -11,7 +11,7 @@ enum colors {
   grey = "#aaaaaa",
   darker = "#1b1f21",
   dark = "#23272A",
-  lightdark = "#2C2F33",
+  lightdark = "#313333",
 }
 
 export default colors;
