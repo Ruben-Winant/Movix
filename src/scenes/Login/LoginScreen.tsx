@@ -12,7 +12,7 @@ import { NavigationStackProp } from "react-navigation-stack";
 import styles from "./styles";
 import colors from "../../assets/colors";
 import { firebase } from "../../firebase/firebaseConfig";
-import MovixLogo from "../../assets/images/MovixLogo";
+import MovixLogo from "../../assets/fonts/images/MovixLogo";
 
 interface LoginScreenProps {
   navigation: NavigationStackProp<{}>;

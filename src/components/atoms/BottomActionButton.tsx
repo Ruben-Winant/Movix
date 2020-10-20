@@ -15,45 +15,44 @@ interface BAbProps {
   movie: Movie;
 }
 
-export default class BottomActionButton extends Component<BAbProps, {}> {
-  _onButtonPressed = () => {
-    this.props.handlePress(this.props.flag, this.props.movie);
+const BottomActionButton = (props: BAbProps) => {
+  const _onButtonPressed = () => {
+    props.handlePress(props.flag, props.movie);
   };
 
-  render() {
-    return (
-      <TouchableHighlight
-        style={this.stylesheets.actionbtnouter}
-        onPress={() => {
-          this._onButtonPressed();
-        }}
-        underlayColor={colors.darker}
-      >
-        <View>
-          <FontAwesome5
-            name={this.props.iconname}
-            size={this.props.size}
-            color={this.props.iconcolor}
-            style={this.stylesheets.actionbtninner}
-            solid={this.props.solid}
-          />
-        </View>
-      </TouchableHighlight>
-    );
-  }
-
-  stylesheets = StyleSheet.create({
+  const stylesheets = StyleSheet.create({
     actionbtnouter: {
       justifyContent: "center",
       borderRadius: 45,
-      padding: "auto",
-      width: this.props.size * 1.65,
-      height: this.props.size * 1.65,
-      backgroundColor: colors.lightdark,
+      width: props.size * 1.65,
+      height: props.size * 1.65,
+      backgroundColor: colors.dark,
       elevation: 5,
     },
     actionbtninner: {
       alignSelf: "center",
     },
   });
-}
+
+  return (
+    <TouchableHighlight
+      style={stylesheets.actionbtnouter}
+      onPress={() => {
+        _onButtonPressed();
+      }}
+      underlayColor={colors.darker}
+    >
+      <View>
+        <FontAwesome5
+          name={props.iconname}
+          size={props.size}
+          color={props.iconcolor}
+          style={stylesheets.actionbtninner}
+          solid={props.solid}
+        />
+      </View>
+    </TouchableHighlight>
+  );
+};
+
+export default BottomActionButton;

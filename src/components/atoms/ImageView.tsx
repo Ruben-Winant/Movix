@@ -15,7 +15,6 @@ import { Movie } from "../../types/Movie";
 import InfoButton from "./InfoButton";
 import { Genre } from "../../types/Genre";
 import { MovieVideo, MovieResult } from "../../types/MovieVideo";
-import dataController from "../../assets/data/dataController";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import Svg, { LinearGradient, Stop, G, Path, Defs } from "react-native-svg";
 
@@ -55,7 +54,6 @@ export default class ImageView extends Component<IVprops, IVstate> {
   }
 
   //#region movie details funcitons
-
   private deviceWidth = Dimensions.get("window").width;
 
   movieImg = (blur: number, abs: boolean) => {
@@ -165,9 +163,16 @@ export default class ImageView extends Component<IVprops, IVstate> {
 
   render() {
     return (
+      //make first view draggable
       <View style={this.styles.imageOuter}>
         {this.state.showMovieInfo ? (
-          <View style={{ borderRadius: 15 }}>
+          <View
+            style={{
+              borderRadius: 15,
+              width: "100%",
+              height: "98%",
+            }}
+          >
             {/* blurred image background */}
             {this.movieImg(4, true)}
             {/* black overlay */}
@@ -184,7 +189,7 @@ export default class ImageView extends Component<IVprops, IVstate> {
               style={{
                 zIndex: 100,
                 height: "100%",
-                padding: 40,
+                padding: 37,
                 flexDirection: "column",
               }}
             >
@@ -288,18 +293,16 @@ export default class ImageView extends Component<IVprops, IVstate> {
 
   styles = StyleSheet.create({
     imageOuter: {
-      flex: 1,
-      flexDirection: "column",
       width: this.deviceWidth * 0.9,
       height: Dimensions.get("window").height * 0.7,
-      marginLeft: (this.deviceWidth * 0.1) / 2,
-      marginRight: (this.deviceWidth * 0.1) / 2,
+      margin: (this.deviceWidth * 0.1) / 2,
+      zIndex: 1000,
     },
     imageInner: {
-      borderRadius: 15,
+      borderRadius: 9,
       backgroundColor: "transparent",
-      width: "100%",
-      height: "100%",
+      width: this.deviceWidth * 0.9,
+      height: Dimensions.get("window").height * 0.7,
     },
     movieInfo: {
       position: "absolute",
@@ -315,7 +318,8 @@ export default class ImageView extends Component<IVprops, IVstate> {
     movieInfoDetailsText: {
       fontSize: 18,
       color: colors.white,
-      margin: 5,
+      marginTop: 5,
+      marginBottom: 5,
     },
   });
 }

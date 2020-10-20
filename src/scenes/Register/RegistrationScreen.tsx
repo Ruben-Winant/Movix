@@ -13,7 +13,7 @@ import styles from "./styles";
 import { firebase } from "../../firebase/firebaseConfig";
 import colors from "../../assets/colors";
 import { UserProfile } from "..";
-import MovixLogo from "../../assets/images/MovixLogo";
+import MovixLogo from "../../assets/fonts/images/MovixLogo";
 
 interface LoginScreenProps {
   navigation: NavigationStackProp<{}>;

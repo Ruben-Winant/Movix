@@ -1,17 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   StyleSheet,
-  TouchableWithoutFeedback,
   TouchableHighlight,
+  Dimensions,
 } from "react-native";
-import { Movie } from "../../types/Movie";
 import TopActionButton from "../atoms/TopActionButton";
-import { firebase } from "./../../../src/firebase/firebaseConfig";
 import colors from "../../assets/colors";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import { Genre } from "../../types/Genre";
 
 interface topBarProps {
   handlePress: Function;
@@ -25,20 +22,18 @@ export const TopBar = ({
   handleUserButtonPress,
 }: topBarProps) => {
   const styles = StyleSheet.create({
-    filterbutton: {
-      justifyContent: "center",
-      padding: "auto",
-    },
     filterbuttoncontainer: {
-      backgroundColor: colors.lightdark,
       paddingLeft: 10,
       paddingRight: 10,
       paddingTop: 4,
       paddingBottom: 4,
-      elevation: 5,
-      borderRadius: 45,
+      borderRadius: 4,
+      backgroundColor: colors.dark,
     },
   });
+
+  //#region movie details funcitons
+  const deviceWidth = Dimensions.get("window").width;
 
   return (
     <View
@@ -46,7 +41,9 @@ export const TopBar = ({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        margin: 20,
+        marginLeft: (deviceWidth * 0.1) / 2,
+        marginRight: (deviceWidth * 0.1) / 2,
+        height: 40,
       }}
     >
       {/* genre's section */}
@@ -67,10 +64,9 @@ export const TopBar = ({
           </Text>
           <FontAwesome5Icon
             name="filter"
-            size={14}
+            size={12}
             color="white"
             solid={true}
-            style={styles.filterbutton}
           />
         </View>
       </TouchableHighlight>

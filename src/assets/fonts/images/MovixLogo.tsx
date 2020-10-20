@@ -1,6 +1,6 @@
 import * as React from "react";
 import Svg, { G, Rect } from "react-native-svg";
-import colors from "../colors";
+import colors from "../../colors";
 
 const MovixLogo = (props: React.SVGProps<SVGSVGElement>) => {
   return (

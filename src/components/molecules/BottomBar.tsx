@@ -42,16 +42,6 @@ export default class BottomBar extends Component<BBprops, {}> {
           movie={this.props.movie}
           size={40}
         />
-
-        {/* <BottomActionButton
-          iconname="info"
-          iconcolor={colors.blue}
-          solid={true}
-          flag="INFO"
-          handlePress={this.props.handlePress}
-          movie={this.props.movie}
-          size={28}
-        /> */}
       </View>
     );
   }
@@ -59,11 +49,12 @@ export default class BottomBar extends Component<BBprops, {}> {
 
 const styles = StyleSheet.create({
   bottombar: {
-    flex: 1,
+    marginBottom: 30,
     flexDirection: "row",
     justifyContent: "space-around",
-    marginLeft: 50,
-    marginRight: 50,
+    marginLeft: 43,
+    marginRight: 43,
     alignItems: "center",
+    height: 75,
   },
 });

@@ -1,13 +1,13 @@
-import React, { Component, createRef } from "react";
+import React, { Component, createRef, useEffect, useState } from "react";
 import {
   View,
-  FlatList,
   ActivityIndicator,
   StatusBar,
   Text,
   Modal,
   ScrollView,
   TouchableWithoutFeedback,
+  Dimensions,
 } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
@@ -19,6 +19,13 @@ import { GenreList } from "../../types/GenreList";
 import { BottomBar, ImageView } from "../../components";
 import { TopBar } from "../../components/molecules/TopBar";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
+import {
+  FlatList,
+  PanGestureHandler,
+  State,
+} from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
+const { cond, eq, add, set, Value, event } = Animated;
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -88,9 +95,11 @@ export default class HomeScreen extends Component<
       });
 
       this.flatlistRef.current?.scrollToIndex({
-        animated: true,
+        animated: false,
         index: this.state.listPos,
       });
+
+      //reset swipe here
     };
 
     //mark movie as flag
@@ -198,51 +207,50 @@ export default class HomeScreen extends Component<
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.dark }}>
+      <View
+        style={{
+          height: "100%",
+          backgroundColor: colors.dark,
+          justifyContent: "center",
+        }}
+      >
         <StatusBar backgroundColor={colors.dark} animated={true} />
         {this.state.moviesLoaded ? (
-          <View style={{ flex: 1 }}>
+          <View style={{ justifyContent: "space-around" }}>
             {/* top bar */}
-            <View style={{ flex: 1 }}>
-              <TopBar
-                handlePress={() =>
-                  this.setState({
-                    genreModalVisible: !this.state.genreModalVisible,
-                  })
-                }
-                handleUserButtonPress={() =>
-                  this.props.navigation.navigate("UserProfile")
-                }
-                genre={this.state.genre}
-              />
-            </View>
-            {/* movies list */}
-            <View>
-              {this.state.movies ? (
-                <FlatList<Movie>
-                  onViewableItemsChanged={this._onViewableItemsChanged}
-                  data={this.state.movies}
-                  renderItem={({ item }) => <ImageView movie={item} />}
-                  horizontal
-                  pagingEnabled
-                  scrollEnabled={false}
-                  showsHorizontalScrollIndicator={false}
-                  ref={this.flatlistRef}
-                  keyExtractor={(item) => item.id.toString()}
-                />
-              ) : (
-                <Text>No movies found</Text>
-              )}
-            </View>
-            {/* bottom bar */}
-            <View style={{ flex: 1, marginBottom: 18, marginTop: 18 }}>
-              <BottomBar
-                movie={this.state.currentFlatlistItem}
-                handlePress={this.moveToNextItem}
-              />
-            </View>
+            <TopBar
+              handlePress={() =>
+                this.setState({
+                  genreModalVisible: !this.state.genreModalVisible,
+                })
+              }
+              handleUserButtonPress={() =>
+                this.props.navigation.navigate("UserProfile")
+              }
+              genre={this.state.genre}
+            />
+
+            {/* movies cards */}
+            <FlatList<Movie>
+              onViewableItemsChanged={this._onViewableItemsChanged}
+              data={this.state.movies}
+              renderItem={({ item }) => <ImageView movie={item} />}
+              removeClippedSubviews
+              horizontal
+              pagingEnabled
+              scrollEnabled={false}
+              showsHorizontalScrollIndicator={false}
+              ref={this.flatlistRef}
+              keyExtractor={(item) => item.id.toString()}
+            />
+
+            {/* bottom bar with action buttons */}
+            <BottomBar
+              movie={this.state.currentFlatlistItem}
+              handlePress={this.moveToNextItem}
+            />
             {/* modal for choosing genre filter */}
-            <Modal animationType="fade" visible={this.state.genreModalVisible}>
+            <Modal animationType="none" visible={this.state.genreModalVisible}>
               <View
                 style={{
                   flex: 1,

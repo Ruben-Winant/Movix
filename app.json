@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./src/assets/images/Movix_logo.png",
     "splash": {
-      "image": "./src/assets/images/Movix_logo_Title.png",
+      "image": "./src/assets/images/g838.png",
       "resizeMode": "contain",
       "backgroundColor": "#313333"
     },
