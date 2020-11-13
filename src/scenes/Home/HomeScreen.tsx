@@ -1,4 +1,4 @@
-import React, { Component, createRef, useEffect, useState } from "react";
+import React, { Component, createRef } from "react";
 import {
   View,
   ActivityIndicator,
@@ -7,7 +7,6 @@ import {
   Modal,
   ScrollView,
   TouchableWithoutFeedback,
-  Dimensions,
 } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
@@ -19,13 +18,8 @@ import { GenreList } from "../../types/GenreList";
 import { BottomBar, ImageView } from "../../components";
 import { TopBar } from "../../components/molecules/TopBar";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import {
-  FlatList,
-  PanGestureHandler,
-  State,
-} from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
-const { cond, eq, add, set, Value, event } = Animated;
+import { FlatList } from "react-native-gesture-handler";
+import { firebase } from "../../firebase/firebaseConfig";
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -38,6 +32,7 @@ interface HomeScreenState {
   currentFlatlistItem: Movie;
   genre: string;
   genreModalVisible: boolean;
+  excludedMovies: number[];
 }
 
 export default class HomeScreen extends Component<
@@ -59,8 +54,27 @@ export default class HomeScreen extends Component<
   private dataCont = new dataController({});
 
   //when component loads in fetch the data
-  componentDidMount() {
-    this.dataCont.getData().then((res) => {
+  async componentDidMount() {
+    let excluded: number[] = [];
+
+    //get active users documents
+    const usersRef = await firebase
+      .firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser?.uid);
+
+    //get the id's of all marked movies
+    const doc = await usersRef.get();
+    if (doc.exists) {
+      excluded = doc.get("seenMovies");
+      excluded = excluded.concat(doc.get("likedMovies"));
+      excluded = excluded.concat(doc.get("dislikedMovies"));
+      this.setState({ excludedMovies: excluded });
+    } else {
+      console.log("no marked movies found");
+    }
+
+    this.dataCont.getData2(this.state.excludedMovies).then((res) => {
       res
         ? this.setState({
             movies: res,
@@ -75,7 +89,7 @@ export default class HomeScreen extends Component<
 
   //#region flatlist
   //change the state of the current item on list change
-  _onViewableItemsChanged = ({ viewableItems }: any) => {
+  _onViewableItemsChanged = async ({ viewableItems }: any) => {
     //.key = movie id
     //.index = place in list
     //.item = movie item
@@ -87,7 +101,7 @@ export default class HomeScreen extends Component<
   flatlistRef = createRef<FlatList<Movie>>();
 
   //functions happens when one of the bottom functions is pressed
-  moveToNextItem = (flag: Flags, movie: Movie) => {
+  moveToNextItem = async (flag: Flags, movie: Movie) => {
     //forward to next card
     let next = () => {
       this.setState({
@@ -98,16 +112,46 @@ export default class HomeScreen extends Component<
         animated: false,
         index: this.state.listPos,
       });
-
-      //reset swipe here
     };
 
+    //get user docs
+    const usersRef = await firebase
+      .firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser?.uid);
+
     //mark movie as flag
-    let onPressedSeen = () => {};
+    let onPressedSeen = async () => {
+      try {
+        usersRef.update({
+          seenMovies: await firebase.firestore.FieldValue.arrayUnion(movie.id),
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-    let onPressedDisliked = () => {};
+    let onPressedDisliked = async () => {
+      try {
+        usersRef.update({
+          dislikedMovies: await firebase.firestore.FieldValue.arrayUnion(
+            movie.id
+          ),
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-    let onPressedLiked = () => {};
+    let onPressedLiked = async () => {
+      try {
+        usersRef.update({
+          likedMovies: await firebase.firestore.FieldValue.arrayUnion(movie.id),
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     flag === "DISLIKE"
       ? (onPressedDisliked(), next())
@@ -124,7 +168,7 @@ export default class HomeScreen extends Component<
   FilterMovies = (genre: string) => {
     if (genre === "All") {
       this.setState({ moviesLoaded: false });
-      this.dataCont.getData().then((res) => {
+      this.dataCont.getData2(this.state.excludedMovies).then((res) => {
         res
           ? this.setState({
               movies: res,
@@ -136,7 +180,7 @@ export default class HomeScreen extends Component<
     }
 
     this.setState({ moviesLoaded: false });
-    this.dataCont.getData().then((res) => {
+    this.dataCont.getData2(this.state.excludedMovies).then((res) => {
       try {
         let fmovies: Movie[] = res.filter((movie) => {
           let genreObj;

@@ -3,7 +3,6 @@ import "react-native-gesture-handler";
 import { Movie } from "../../types/Movie";
 import { Genre } from "../../types/Genre";
 import { firebase } from "./../../../src/firebase/firebaseConfig";
-import { MovieVideo, MovieResult } from "../../types/MovieVideo";
 
 export default class dataController extends Component {
   constructor(props: any) {
@@ -27,6 +26,42 @@ export default class dataController extends Component {
       console.log(e);
     }
     return movies;
+  };
+
+  getData2 = async (filterIds: number[]) => {
+    //returns all movies as an array of movies
+    let movies: Movie[] = [];
+    try {
+      let db = firebase.database();
+      await (await db.ref().once("value")).forEach((child) => {
+        let movJson = JSON.stringify(child.exportVal());
+        let movObj = JSON.parse(movJson);
+        movies.push(movObj);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    //exclude all seen, liked and disliked movies
+    filterIds.length > 0
+      ? (movies = movies.filter((x) => !filterIds.includes(x.id)))
+      : null;
+    return movies;
+  };
+
+  getSpecificData = async (filterIds: number[]) => {
+    //returns all movies as an array of movies
+    let movies: Movie[] = [];
+    try {
+      let db = firebase.database();
+      await (await db.ref().once("value")).forEach((child) => {
+        let movJson = JSON.stringify(child.exportVal());
+        let movObj = JSON.parse(movJson);
+        filterIds.includes(movObj.id) ? movies.push(movObj) : null;
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    return movies.reverse();
   };
 
   //#region get movie(s)
@@ -102,45 +137,6 @@ export default class dataController extends Component {
 
     return resultMovies;
   }
-
-  //#endregion
-
-  //#region marking movies
-
-  markMovieWithFlag(flag: string, id: number) {
-    switch (flag) {
-      case "DISLIKE":
-        //search the movie by its id in the json file
-        //then change its flag to parameter flag
-        //save changes and add movie id to firebase in the right table
-        //repeat for all below
-        break;
-
-      case "SEEN":
-        break;
-
-      case "LIKE":
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  //#endregion
-
-  //#region remove movies from list
-
-  //FLOW =>
-  //search movie with id inside json file
-  //change flage to NONE
-  //remove item from firebase
-
-  removeMovieFromDisliked(id: number) {}
-
-  removeMovieFromLiked(id: number) {}
-
-  removeMovieFromSeen(id: number) {}
 
   //#endregion
 }

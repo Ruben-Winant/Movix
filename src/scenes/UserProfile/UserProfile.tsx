@@ -15,6 +15,7 @@ import colors from "../../assets/colors";
 import { TextInput } from "react-native-gesture-handler";
 import firebase from "firebase";
 import Svg, { Defs, LinearGradient, Stop, G, Path } from "react-native-svg";
+import SettingsMovieTypeCountButtonRow from "../../components/molecules/SettingsMovieTypeCountButtonRow";
 
 interface UserProfileProps {
   navigation: NavigationStackProp<{}>;
@@ -24,6 +25,8 @@ interface UserProfileState {
   username: string;
   newPasswd: string;
   profileViewCollapse: boolean;
+  movieTypeViewCollapse: boolean;
+  statsViewCollapse: boolean;
 }
 
 export default class LoginScreen extends Component<
@@ -36,7 +39,6 @@ export default class LoginScreen extends Component<
       user: firebase.auth().currentUser,
       username: firebase.auth().currentUser?.displayName,
       newPasswd: "",
-      profileViewCollapse: true,
     };
   }
 
@@ -228,10 +230,127 @@ export default class LoginScreen extends Component<
                 </TouchableOpacity>
               </View>
             </View>
-            {/* Movie stats */}
-            {/* Liked movies */}
-            {/* Seen movies */}
-            {/* Disliked movies */}
+
+            {/* Movie types */}
+            <View style={{ marginTop: 20 }}>
+              <TouchableWithoutFeedback
+                onPress={() =>
+                  this.setState({
+                    movieTypeViewCollapse: !this.state.movieTypeViewCollapse,
+                  })
+                }
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <FontAwesome5Icon
+                    name="film"
+                    size={24}
+                    color={colors.white}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      color: colors.white,
+                      marginLeft: 14,
+                    }}
+                  >
+                    Movie's
+                  </Text>
+                  {this.state.profileViewCollapse ? (
+                    <FontAwesome5Icon
+                      style={{
+                        alignSelf: "flex-end",
+                        position: "absolute",
+                        right: 0,
+                      }}
+                      name="chevron-right"
+                      size={24}
+                      color={colors.white}
+                    />
+                  ) : (
+                    <FontAwesome5Icon
+                      style={{
+                        alignSelf: "flex-end",
+                        position: "absolute",
+                        right: 0,
+                      }}
+                      name="chevron-down"
+                      size={24}
+                      color={colors.white}
+                    />
+                  )}
+                </View>
+              </TouchableWithoutFeedback>
+
+              <View
+                style={{
+                  display: this.state.movieTypeViewCollapse ? "flex" : "none",
+                }}
+              >
+                <SettingsMovieTypeCountButtonRow
+                  navigation={this.props.navigation}
+                />
+              </View>
+            </View>
+
+            {/* Stats */}
+            <View style={{ marginTop: 20 }}>
+              <TouchableWithoutFeedback
+                onPress={() =>
+                  this.setState({
+                    statsViewCollapse: !this.state.statsViewCollapse,
+                  })
+                }
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <FontAwesome5Icon
+                    name="chart-bar"
+                    size={24}
+                    color={colors.white}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      color: colors.white,
+                      marginLeft: 14,
+                    }}
+                  >
+                    Stats
+                  </Text>
+                  {this.state.profileViewCollapse ? (
+                    <FontAwesome5Icon
+                      style={{
+                        alignSelf: "flex-end",
+                        position: "absolute",
+                        right: 0,
+                      }}
+                      name="chevron-right"
+                      size={24}
+                      color={colors.white}
+                    />
+                  ) : (
+                    <FontAwesome5Icon
+                      style={{
+                        alignSelf: "flex-end",
+                        position: "absolute",
+                        right: 0,
+                      }}
+                      name="chevron-down"
+                      size={24}
+                      color={colors.white}
+                    />
+                  )}
+                </View>
+              </TouchableWithoutFeedback>
+
+              <View
+                style={{
+                  display: this.state.statsViewCollapse ? "flex" : "none",
+                }}
+              >
+                <Text style={{ color: colors.white }}>Coming soon</Text>
+              </View>
+            </View>
+
             {/* App info (tmdb) */}
             <View
               style={{
@@ -270,7 +389,7 @@ export default class LoginScreen extends Component<
             </View>
           </View>
         ) : (
-          <Text></Text>
+          <View></View>
         )}
       </View>
     );
@@ -290,7 +409,7 @@ export default class LoginScreen extends Component<
       color: colors.white,
       fontSize: 16,
       width: "100%",
-      borderBottomColor: colors.white,
+      borderBottomColor: colors.grey,
       borderBottomWidth: 1,
       marginTop: 15,
     },

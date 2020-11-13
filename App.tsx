@@ -12,6 +12,7 @@ import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
 import { firebase } from "./src/firebase/firebaseConfig";
 import colors from "./src/assets/colors";
+import MovieCollection from "./src/scenes/MovieTypes/MovieCollection";
 
 interface AppProps {}
 interface AppState {
@@ -90,6 +91,11 @@ const AppNavigator = createStackNavigator(
     UserProfile: {
       screen: UserProfile,
       params: { user: firebase.auth().currentUser },
+      navigationOptions: { animationEnabled: false },
+    },
+    MovieCollection: {
+      screen: MovieCollection,
+      params: { type: null, excluded: [] },
       navigationOptions: { animationEnabled: false },
     },
   },

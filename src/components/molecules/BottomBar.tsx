@@ -9,6 +9,7 @@ interface BBprops {
   movie: Movie;
 }
 
+//! BUTTONS ARE NOT IN SYNC!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 export default class BottomBar extends Component<BBprops, {}> {
   render() {
     return (

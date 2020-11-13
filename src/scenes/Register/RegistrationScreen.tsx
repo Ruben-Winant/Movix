@@ -84,6 +84,9 @@ export default class RegistrationScreen extends Component<
           id: uid,
           email: this.state.email,
           fullName: this.state.fullName,
+          likedMovies: [],
+          seenMovies: [],
+          dislikedMovies: [],
         };
         const usersRef = firebase.firestore().collection("users");
         usersRef
