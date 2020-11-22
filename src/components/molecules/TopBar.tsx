@@ -32,7 +32,6 @@ export const TopBar = ({
     },
   });
 
-  //#region movie details funcitons
   const deviceWidth = Dimensions.get("window").width;
 
   return (

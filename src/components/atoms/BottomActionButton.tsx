@@ -1,8 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { TouchableHighlight, StyleSheet, View } from "react-native";
+import { TouchableHighlight, StyleSheet, View, Text } from "react-native";
 import { Flags } from "../../types/Flags";
-import { Movie } from "../../types/Movie";
 import colors from "../../assets/colors";
 
 interface BAbProps {
@@ -12,12 +11,11 @@ interface BAbProps {
   size: number;
   flag: Flags;
   handlePress: Function;
-  movie: Movie;
 }
 
 const BottomActionButton = (props: BAbProps) => {
   const _onButtonPressed = () => {
-    props.handlePress(props.flag, props.movie);
+    props.handlePress(props.flag);
   };
 
   const stylesheets = StyleSheet.create({

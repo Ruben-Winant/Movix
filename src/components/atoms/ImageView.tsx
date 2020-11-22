@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
   Image,
   Dimensions,
-  Modal,
   Text,
   ScrollView,
   Linking,
@@ -22,62 +21,82 @@ interface IVprops {
   movie: Movie;
 }
 
-interface IVstate {
-  showMovieInfo: boolean;
-  videos: MovieVideo[];
-}
+const ImageView = (props: IVprops) => {
+  const [showMovieInfo, setShowMovieInfo] = useState<boolean>(false);
+  const [videos, setVideos] = useState<MovieVideo[]>([]);
+  const deviceWidth = Dimensions.get("window").width;
 
-export default class ImageView extends Component<IVprops, IVstate> {
-  constructor(props: IVprops) {
-    super(props);
-    this.state = {
-      showMovieInfo: false,
-      videos: [],
-    };
-  }
+  const styles = StyleSheet.create({
+    imageOuter: {
+      width: deviceWidth * 0.9,
+      height: Dimensions.get("window").height * 0.7,
+      margin: (deviceWidth * 0.1) / 2,
+      zIndex: 1000,
+    },
+    imageInner: {
+      borderRadius: 9,
+      backgroundColor: "transparent",
+      width: deviceWidth * 0.9,
+      height: Dimensions.get("window").height * 0.7,
+    },
+    movieInfo: {
+      position: "absolute",
+      alignSelf: "flex-end",
+      paddingRight: 10,
+      paddingTop: 10,
+    },
+    movieInfoDetailsBlock: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    movieInfoDetailsText: {
+      fontSize: 18,
+      color: colors.white,
+      marginTop: 5,
+      marginBottom: 5,
+    },
+  });
 
-  componentDidMount() {
+  useEffect(() => {
     try {
       fetch(
         "https://api.themoviedb.org/3/movie/" +
-          this.props.movie.id +
+          props.movie.id +
           "/videos?api_key=396734bc8915c8d1569cb4ff49b59c56"
       )
         .then((response) => response.json())
         .then((data) => {
           let res: MovieResult = data;
-          this.setState({ videos: res.results });
+          setVideos(res.results);
         });
     } catch (e) {
       console.log(e);
     }
-  }
+  }, []);
 
-  //#region movie details funcitons
-  private deviceWidth = Dimensions.get("window").width;
-
-  movieImg = (blur: number, abs: boolean) => {
+  const movieImg = (blur: number, abs: boolean) => {
     let result = (
       <Image
         style={{
-          ...this.styles.imageInner,
+          ...styles.imageInner,
           position: abs ? "absolute" : "relative",
         }}
-        source={{ uri: this.props.movie.posterpath }}
+        source={{ uri: props.movie.posterpath }}
         blurRadius={blur}
       />
     );
     return result;
   };
 
-  CalcRuntime = (runtime: number) => {
+  const CalcRuntime = (runtime: number) => {
     let hours = Math.floor(runtime / 60) + "h";
     let minutes = (runtime % 60) + "m";
     let result = hours + " " + minutes;
     return result;
   };
 
-  GetDate = (date: string) => {
+  const GetDate = (date: string) => {
     let maanden = [
       "Jan",
       "Feb",
@@ -102,17 +121,17 @@ export default class ImageView extends Component<IVprops, IVstate> {
     return result;
   };
 
-  GetGenres = (genres: Genre[]) => {
+  const GetGenres = (genres: Genre[]) => {
     let result: String = "";
     let genreNames = Object.values(genres);
     genreNames.forEach((genre) => (result += genre.name + ", "));
     return result;
   };
 
-  GetMovieTrailer = () => {
+  const GetMovieTrailer = () => {
     let trailers: MovieVideo[] = [];
 
-    this.state.videos.forEach((vid) =>
+    videos.forEach((vid) =>
       vid.type === "Trailer" ? trailers.push(vid) : null
     );
 
@@ -130,7 +149,7 @@ export default class ImageView extends Component<IVprops, IVstate> {
     return result;
   };
 
-  GetTmdbLink = (link: string) => {
+  const GetTmdbLink = (link: string) => {
     return (
       <TouchableWithoutFeedback onPress={() => Linking.openURL(link)}>
         <Svg style={{ width: 180, height: 50 }} viewBox="0 0 273.42 35.52">
@@ -159,167 +178,120 @@ export default class ImageView extends Component<IVprops, IVstate> {
     );
   };
 
-  //#endregion
-
-  render() {
-    return (
-      //make first view draggable
-      <View style={this.styles.imageOuter}>
-        {this.state.showMovieInfo ? (
+  return (
+    <View style={styles.imageOuter}>
+      {showMovieInfo ? (
+        <View
+          style={{
+            borderRadius: 15,
+            width: "100%",
+            height: "98%",
+          }}
+        >
+          {/* blurred image background */}
+          {movieImg(4, true)}
+          {/* black overlay */}
           <View
             style={{
-              borderRadius: 15,
-              width: "100%",
-              height: "98%",
+              ...styles.imageInner,
+              position: "absolute",
+              zIndex: 95,
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+            }}
+          ></View>
+          {/* Movie details */}
+          <View
+            style={{
+              zIndex: 100,
+              height: "100%",
+              padding: 37,
+              flexDirection: "column",
             }}
           >
-            {/* blurred image background */}
-            {this.movieImg(4, true)}
-            {/* black overlay */}
-            <View
+            {/* Movie title */}
+            <Text
               style={{
-                ...this.styles.imageInner,
-                position: "absolute",
-                zIndex: 95,
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-              }}
-            ></View>
-            {/* Movie details */}
-            <View
-              style={{
-                zIndex: 100,
-                height: "100%",
-                padding: 37,
-                flexDirection: "column",
+                fontSize: 30,
+                color: colors.white,
+                textAlign: "left",
+                marginBottom: 5,
               }}
             >
-              {/* Movie title */}
-              <Text
-                style={{
-                  fontSize: 30,
-                  color: colors.white,
-                  textAlign: "left",
-                  marginBottom: 5,
-                }}
-              >
-                {this.props.movie.title}
-              </Text>
+              {props.movie.title}
+            </Text>
 
-              {/* Movie details */}
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={this.styles.movieInfoDetailsBlock}>
-                  <Text style={this.styles.movieInfoDetailsText}>
-                    Released:
-                  </Text>
-                  <Text style={this.styles.movieInfoDetailsText}>
-                    {this.GetDate(this.props.movie.release_date)}
-                  </Text>
+            {/* Movie details */}
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.movieInfoDetailsBlock}>
+                <Text style={styles.movieInfoDetailsText}>Released:</Text>
+                <Text style={styles.movieInfoDetailsText}>
+                  {GetDate(props.movie.release_date)}
+                </Text>
+              </View>
+              <View style={styles.movieInfoDetailsBlock}>
+                <Text style={styles.movieInfoDetailsText}>Runtime:</Text>
+                <Text style={styles.movieInfoDetailsText}>
+                  {CalcRuntime(Number.parseInt(props.movie.runtime))}
+                </Text>
+              </View>
+              <View style={styles.movieInfoDetailsBlock}>
+                <Text style={styles.movieInfoDetailsText}>Avg. rating:</Text>
+                <Text style={styles.movieInfoDetailsText}>
+                  {props.movie.vote_average * 10 + "%"}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.movieInfoDetailsText}>Summary:</Text>
+                <Text style={styles.movieInfoDetailsText}>
+                  {props.movie.overview}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.movieInfoDetailsText}>Genre(s):</Text>
+                <Text style={styles.movieInfoDetailsText}>
+                  {GetGenres(props.movie.genres)}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.movieInfoDetailsText}>
+                  Trailer & extra's:
+                </Text>
+                <View
+                  style={{
+                    margin: 4,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {GetMovieTrailer()}
+                  {GetTmdbLink(props.movie.tmdblink)}
                 </View>
-                <View style={this.styles.movieInfoDetailsBlock}>
-                  <Text style={this.styles.movieInfoDetailsText}>Runtime:</Text>
-                  <Text style={this.styles.movieInfoDetailsText}>
-                    {this.CalcRuntime(
-                      Number.parseInt(this.props.movie.runtime)
-                    )}
-                  </Text>
-                </View>
-                <View style={this.styles.movieInfoDetailsBlock}>
-                  <Text style={this.styles.movieInfoDetailsText}>
-                    Avg. rating:
-                  </Text>
-                  <Text style={this.styles.movieInfoDetailsText}>
-                    {this.props.movie.vote_average * 10 + "%"}
-                  </Text>
-                </View>
-                <View>
-                  <Text style={this.styles.movieInfoDetailsText}>Summary:</Text>
-                  <Text style={this.styles.movieInfoDetailsText}>
-                    {this.props.movie.overview}
-                  </Text>
-                </View>
-                <View>
-                  <Text style={this.styles.movieInfoDetailsText}>
-                    Genre(s):
-                  </Text>
-                  <Text style={this.styles.movieInfoDetailsText}>
-                    {this.GetGenres(this.props.movie.genres)}
-                  </Text>
-                </View>
-                <View>
-                  <Text style={this.styles.movieInfoDetailsText}>
-                    Trailer & extra's:
-                  </Text>
-                  <View
-                    style={{
-                      margin: 4,
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    {this.GetMovieTrailer()}
-                    {this.GetTmdbLink(this.props.movie.tmdblink)}
-                  </View>
-                </View>
-              </ScrollView>
-            </View>
-            {/* Infobutton toggle */}
-            <View style={{ ...this.styles.movieInfo, zIndex: 99 }}>
-              <InfoButton
-                handleClick={() => {
-                  this.setState({
-                    showMovieInfo: !this.state.showMovieInfo,
-                  });
-                }}
-              />
-            </View>
+              </View>
+            </ScrollView>
           </View>
-        ) : (
-          <View>
-            {this.movieImg(0, false)}
-            <View style={this.styles.movieInfo}>
-              <InfoButton
-                handleClick={() => {
-                  this.setState({
-                    showMovieInfo: !this.state.showMovieInfo,
-                  });
-                }}
-              />
-            </View>
+          {/* Infobutton toggle */}
+          <View style={{ ...styles.movieInfo, zIndex: 99 }}>
+            <InfoButton
+              handleClick={() => {
+                setShowMovieInfo(!showMovieInfo);
+              }}
+            />
           </View>
-        )}
-      </View>
-    );
-  }
+        </View>
+      ) : (
+        <View>
+          {movieImg(0, false)}
+          <View style={styles.movieInfo}>
+            <InfoButton
+              handleClick={() => {
+                setShowMovieInfo(!showMovieInfo);
+              }}
+            />
+          </View>
+        </View>
+      )}
+    </View>
+  );
+};
 
-  styles = StyleSheet.create({
-    imageOuter: {
-      width: this.deviceWidth * 0.9,
-      height: Dimensions.get("window").height * 0.7,
-      margin: (this.deviceWidth * 0.1) / 2,
-      zIndex: 1000,
-    },
-    imageInner: {
-      borderRadius: 9,
-      backgroundColor: "transparent",
-      width: this.deviceWidth * 0.9,
-      height: Dimensions.get("window").height * 0.7,
-    },
-    movieInfo: {
-      position: "absolute",
-      alignSelf: "flex-end",
-      paddingRight: 10,
-      paddingTop: 10,
-    },
-    movieInfoDetailsBlock: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    movieInfoDetailsText: {
-      fontSize: 18,
-      color: colors.white,
-      marginTop: 5,
-      marginBottom: 5,
-    },
-  });
-}
+export default ImageView;

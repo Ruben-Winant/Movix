@@ -1,13 +1,6 @@
 import "react-native-gesture-handler";
-import React, { Component } from "react";
-import {
-  Text,
-  View,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import React, { useState } from "react";
+import { Text, View, TextInput, TouchableOpacity, Alert } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import styles from "./styles";
 import colors from "../../assets/colors";
@@ -17,34 +10,26 @@ import MovixLogo from "../../assets/fonts/images/MovixLogo";
 interface LoginScreenProps {
   navigation: NavigationStackProp<{}>;
 }
-interface LoginScreenState {
-  email: string;
-  password: string;
-}
 
-export default class LoginScreen extends Component<
-  LoginScreenProps,
-  LoginScreenState
-> {
-  setEmail(email: string) {
-    this.setState({
-      email: email,
-    });
-  }
-  setPassword(pwd: string) {
-    this.setState({
-      password: pwd,
-    });
-  }
+const LoginScreen = (props: LoginScreenProps) => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-  onLoginPress = () => {
-    if (this.state.email == null || this.state.password == null) {
+  const onEmailChange = (email: string) => {
+    setEmail(email);
+  };
+  const onPasswordChange = (pwd: string) => {
+    setPassword(pwd);
+  };
+
+  const onLoginPress = () => {
+    if (email == null || password == null) {
       Alert.alert("Whoops", "Email or password was left open");
       return;
     } else {
       firebase
         .auth()
-        .signInWithEmailAndPassword(this.state.email, this.state.password)
+        .signInWithEmailAndPassword(email, password)
         .then((response: any) => {
           const uid = response.user.uid;
           const usersRef = firebase.firestore().collection("users");
@@ -57,7 +42,7 @@ export default class LoginScreen extends Component<
                 return;
               }
               const user = firestoreDocument.data();
-              this.props.navigation.navigate("Home", { user: user });
+              props.navigation.navigate("Home", { user: user });
             })
             .catch((error) => {
               alert(error);
@@ -69,48 +54,45 @@ export default class LoginScreen extends Component<
     }
   };
 
-  onFooterLinkPress = () => {
-    this.props.navigation.navigate("Register");
+  const onFooterLinkPress = () => {
+    props.navigation.navigate("Register");
   };
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={{ flex: 1, width: "100%" }}>
-          <MovixLogo height={350} />
-          <TextInput
-            style={styles.input}
-            placeholder="E-mail"
-            placeholderTextColor={colors.white}
-            onChangeText={(text) => this.setEmail(text)}
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.input}
-            placeholderTextColor={colors.white}
-            secureTextEntry
-            placeholder="Password"
-            onChangeText={(text) => this.setPassword(text)}
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-          />
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.onLoginPress()}
-          >
-            <Text style={styles.buttonTitle}>Log in</Text>
-          </TouchableOpacity>
-          <View style={styles.footerView}>
-            <Text style={styles.footerText}>
-              Don't have an account?{" "}
-              <Text onPress={this.onFooterLinkPress} style={styles.footerLink}>
-                Sign up
-              </Text>
+  return (
+    <View style={styles.container}>
+      <View style={{ flex: 1, width: "100%" }}>
+        <MovixLogo height={350} />
+        <TextInput
+          style={styles.input}
+          placeholder="E-mail"
+          placeholderTextColor={colors.white}
+          onChangeText={(text) => onEmailChange(text)}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholderTextColor={colors.white}
+          secureTextEntry
+          placeholder="Password"
+          onChangeText={(text) => onPasswordChange(text)}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TouchableOpacity style={styles.button} onPress={() => onLoginPress()}>
+          <Text style={styles.buttonTitle}>Log in</Text>
+        </TouchableOpacity>
+        <View style={styles.footerView}>
+          <Text style={styles.footerText}>
+            Don't have an account?{" "}
+            <Text onPress={onFooterLinkPress} style={styles.footerLink}>
+              Sign up
             </Text>
-          </View>
+          </Text>
         </View>
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
+
+export default LoginScreen;

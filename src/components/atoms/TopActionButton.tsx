@@ -7,29 +7,9 @@ interface TAbProps {
   iconname: string;
   actionbtnfunc: Function;
 }
-interface TAbState {}
 
-export default class TopActionButton extends Component<TAbProps, TAbState> {
-  render() {
-    return (
-      <TouchableWithoutFeedback
-        style={this.stylesheets.actionbtnouter}
-        onPress={() => this.props.actionbtnfunc()}
-      >
-        <View>
-          <FontAwesome5
-            name={this.props.iconname}
-            size={24}
-            color="white"
-            style={this.stylesheets.actionbtninner}
-            solid={true}
-          />
-        </View>
-      </TouchableWithoutFeedback>
-    );
-  }
-
-  stylesheets = StyleSheet.create({
+const TopActionButton = (props: TAbProps) => {
+  const stylesheets = StyleSheet.create({
     actionbtnouter: {
       justifyContent: "center",
       borderRadius: 45,
@@ -41,4 +21,23 @@ export default class TopActionButton extends Component<TAbProps, TAbState> {
       alignSelf: "center",
     },
   });
-}
+
+  return (
+    <TouchableWithoutFeedback
+      style={stylesheets.actionbtnouter}
+      onPress={() => props.actionbtnfunc()}
+    >
+      <View>
+        <FontAwesome5
+          name={props.iconname}
+          size={24}
+          color="white"
+          style={stylesheets.actionbtninner}
+          solid={true}
+        />
+      </View>
+    </TouchableWithoutFeedback>
+  );
+};
+
+export default TopActionButton;

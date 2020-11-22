@@ -6,38 +6,34 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 interface IbProps {
   handleClick: Function;
 }
-interface IbState {}
 
-export default class InfoButton extends Component<IbProps, IbState> {
-  render() {
-    return (
-      <TouchableWithoutFeedback
-        style={stylesheets.infoButtonOutter}
-        onPress={() => this.props.handleClick()}
-      >
-        <View>
-          <FontAwesome5
-            name="info-circle"
-            size={30}
-            color="white"
-            style={stylesheets.infoButtonInner}
-            solid={true}
-          />
-        </View>
-      </TouchableWithoutFeedback>
-    );
-  }
-}
+const InfoButton = (props: IbProps) => {
+  const stylesheets = StyleSheet.create({
+    infoButtonOutter: {
+      justifyContent: "center",
+      padding: "auto",
+      width: 40,
+      height: 40,
+    },
+    infoButtonInner: { alignSelf: "center" },
+  });
 
-const stylesheets = StyleSheet.create({
-  infoButtonOutter: {
-    justifyContent: "center",
-    padding: "auto",
-    width: 40,
-    height: 40,
-  },
-  infoButtonInner: { alignSelf: "center" },
-});
+  return (
+    <TouchableWithoutFeedback
+      style={stylesheets.infoButtonOutter}
+      onPress={() => props.handleClick()}
+    >
+      <View>
+        <FontAwesome5
+          name="info-circle"
+          size={30}
+          color="white"
+          style={stylesheets.infoButtonInner}
+          solid={true}
+        />
+      </View>
+    </TouchableWithoutFeedback>
+  );
+};
 
-//USAGE
-//<InfoButton infobtnfunc={() => this.onInfoButtonPress(movies[0])} />
+export default InfoButton;

@@ -1,4 +1,4 @@
-import React, { Component, createRef } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import {
   View,
   ActivityIndicator,
@@ -7,6 +7,7 @@ import {
   Modal,
   ScrollView,
   TouchableWithoutFeedback,
+  FlatList,
 } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
@@ -18,208 +19,77 @@ import { GenreList } from "../../types/GenreList";
 import { BottomBar, ImageView } from "../../components";
 import { TopBar } from "../../components/molecules/TopBar";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import { FlatList } from "react-native-gesture-handler";
 import { firebase } from "../../firebase/firebaseConfig";
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
 }
 
-interface HomeScreenState {
-  movies: Movie[];
-  moviesLoaded: boolean;
-  listPos: number;
-  currentFlatlistItem: Movie;
-  genre: string;
-  genreModalVisible: boolean;
-  excludedMovies: number[];
-}
+const HomeScreen = (props: HomeScreenProps) => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [moviesLoaded, setMoviesLoaded] = useState<Boolean>(false);
+  const [listPos, setListPos] = useState<number>(0);
+  const [movieGenre, setGenre] = useState<string>("All");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [excludedMovies, setExcludedMovies] = useState<number[]>([]);
+  const [currMovieId, setMovieId] = useState<number>();
+  const flatlistRef = createRef<FlatList<Movie>>();
+  const dataCont = new dataController({});
 
-export default class HomeScreen extends Component<
-  HomeScreenProps,
-  HomeScreenState
-> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      movies: [],
-      moviesLoaded: false,
-      listPos: 0,
-      currentFlatlistItem: null,
-      genre: "All",
-      modalVisible: false,
-    };
-  }
-
-  private dataCont = new dataController({});
-
-  //when component loads in fetch the data
-  async componentDidMount() {
+  useEffect(() => {
     let excluded: number[] = [];
+    setModalVisible(false);
 
-    //get active users documents
-    const usersRef = await firebase
-      .firestore()
-      .collection("users")
-      .doc(firebase.auth().currentUser?.uid);
+    const retrieveData = async () => {
+      const usersRef = await firebase
+        .firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser?.uid);
 
-    //get the id's of all marked movies
-    const doc = await usersRef.get();
-    if (doc.exists) {
-      excluded = doc.get("seenMovies");
-      excluded = excluded.concat(doc.get("likedMovies"));
-      excluded = excluded.concat(doc.get("dislikedMovies"));
-      this.setState({ excludedMovies: excluded });
-    } else {
-      console.log("no marked movies found");
-    }
+      //get the id's of all marked movies
+      const doc = await usersRef.get();
 
-    this.dataCont.getData2(this.state.excludedMovies).then((res) => {
-      res
-        ? this.setState({
-            movies: res,
-            moviesLoaded: true,
-          })
-        : alert("no movies found");
-    });
-    this.setState({
-      genreModalVisible: false,
-    });
-  }
-
-  //#region flatlist
-  //change the state of the current item on list change
-  _onViewableItemsChanged = async ({ viewableItems }: any) => {
-    //.key = movie id
-    //.index = place in list
-    //.item = movie item
-    let currItem = viewableItems[0].item as Movie;
-    this.setState({ currentFlatlistItem: currItem });
-  };
-
-  //create ref to flatlist
-  flatlistRef = createRef<FlatList<Movie>>();
-
-  //functions happens when one of the bottom functions is pressed
-  moveToNextItem = async (flag: Flags, movie: Movie) => {
-    //forward to next card
-    let next = () => {
-      this.setState({
-        listPos: this.state.listPos + 1,
-      });
-
-      this.flatlistRef.current?.scrollToIndex({
-        animated: false,
-        index: this.state.listPos,
-      });
-    };
-
-    //get user docs
-    const usersRef = await firebase
-      .firestore()
-      .collection("users")
-      .doc(firebase.auth().currentUser?.uid);
-
-    //mark movie as flag
-    let onPressedSeen = async () => {
-      try {
-        usersRef.update({
-          seenMovies: await firebase.firestore.FieldValue.arrayUnion(movie.id),
-        });
-      } catch (error) {
-        console.log(error);
+      if (doc.exists) {
+        excluded = doc.get("seenMovies");
+        excluded = excluded.concat(doc.get("likedMovies"));
+        excluded = excluded.concat(doc.get("dislikedMovies"));
+        setExcludedMovies(excluded);
       }
     };
 
-    let onPressedDisliked = async () => {
-      try {
-        usersRef.update({
-          dislikedMovies: await firebase.firestore.FieldValue.arrayUnion(
-            movie.id
-          ),
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    let onPressedLiked = async () => {
-      try {
-        usersRef.update({
-          likedMovies: await firebase.firestore.FieldValue.arrayUnion(movie.id),
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    flag === "DISLIKE"
-      ? (onPressedDisliked(), next())
-      : flag === "SEEN"
-      ? (onPressedSeen(), next())
-      : flag === "LIKE"
-      ? (onPressedLiked(), next())
-      : console.log("Something went wrong");
-  };
-
-  //#endregion
-
-  //#region genre menu modal
-  FilterMovies = (genre: string) => {
-    if (genre === "All") {
-      this.setState({ moviesLoaded: false });
-      this.dataCont.getData2(this.state.excludedMovies).then((res) => {
+    retrieveData().then(() =>
+      dataCont.getData2(excluded).then((res) => {
         res
-          ? this.setState({
-              movies: res,
-              moviesLoaded: true,
-            })
+          ? (setMovies(res), setMoviesLoaded(true), setMovieId(res[0].id))
           : alert("no movies found");
-      });
-      return;
+      })
+    );
+  }, []);
+
+  const moveToNextItem = (flag: Flags) => {
+    currMovieId ? dataCont.addMovieToList(flag, currMovieId) : null;
+
+    if (flatlistRef !== null && flatlistRef.current !== null) {
+      if (typeof flatlistRef.current.scrollToIndex === "function") {
+        setListPos(listPos + 1);
+        flatlistRef.current.scrollToIndex({ animated: false, index: listPos });
+      }
     }
 
-    this.setState({ moviesLoaded: false });
-    this.dataCont.getData2(this.state.excludedMovies).then((res) => {
-      try {
-        let fmovies: Movie[] = res.filter((movie) => {
-          let genreObj;
-          movie.genres != null || typeof movie.genres !== "undefined"
-            ? (genreObj = Object.values(movie.genres))
-            : null;
-          let genreNames: string[] = [];
-
-          genreObj != null || typeof genreObj !== "undefined"
-            ? genreObj?.forEach((genre) => {
-                genreNames.push(genre.name);
-              })
-            : null;
-
-          let data = genreNames.some((item) => item === genre);
-          return data;
-        });
-        this.setState({ moviesLoaded: false });
-        this.setState({
-          movies: fmovies,
-          moviesLoaded: true,
-        });
-      } catch (error) {
-        console.error(error.message);
-      }
-    });
+    setMovieId(movies[listPos].id);
   };
 
-  MakeGenreButtonList = () => {
+  const MakeGenreButtonList = () => {
     let genreButtons: any[] = [];
     GenreList.forEach((genre) => {
-      let color = genre === this.state.genre ? colors.blue : colors.white;
+      let color = movieGenre === genre ? colors.blue : colors.white;
       genreButtons.push(
         <Text
           key={genre}
           onPress={() => {
-            this.setState({ genreModalVisible: !this.state.genreModalVisible });
-            this.setState({ genre: genre });
-            this.FilterMovies(genre);
+            setModalVisible(!modalVisible);
+            setGenre(genre);
+            FilterMovies(genre);
           }}
           style={{
             textAlign: "center",
@@ -247,112 +117,138 @@ export default class HomeScreen extends Component<
     );
     return result;
   };
-  //#endregion
 
-  render() {
-    return (
-      <View
-        style={{
-          height: "100%",
-          backgroundColor: colors.dark,
-          justifyContent: "center",
-        }}
-      >
-        <StatusBar backgroundColor={colors.dark} animated={true} />
-        {this.state.moviesLoaded ? (
-          <View style={{ justifyContent: "space-around" }}>
-            {/* top bar */}
-            <TopBar
-              handlePress={() =>
-                this.setState({
-                  genreModalVisible: !this.state.genreModalVisible,
-                })
-              }
-              handleUserButtonPress={() =>
-                this.props.navigation.navigate("UserProfile")
-              }
-              genre={this.state.genre}
-            />
+  const FilterMovies = (genre: string) => {
+    if (genre === "All") {
+      setMoviesLoaded(false);
+      dataCont.getData2(excludedMovies).then((res) => {
+        res
+          ? (setMovies(res), setMoviesLoaded(true))
+          : alert("no movies found");
+      });
+      return;
+    }
 
-            {/* movies cards */}
-            <FlatList<Movie>
-              onViewableItemsChanged={this._onViewableItemsChanged}
-              data={this.state.movies}
-              renderItem={({ item }) => <ImageView movie={item} />}
-              removeClippedSubviews
-              horizontal
-              pagingEnabled
-              scrollEnabled={false}
-              showsHorizontalScrollIndicator={false}
-              ref={this.flatlistRef}
-              keyExtractor={(item) => item.id.toString()}
-            />
+    setMoviesLoaded(false);
+    dataCont.getData2(excludedMovies).then((res) => {
+      try {
+        let fmovies: Movie[] = res.filter((movie) => {
+          let genreObj;
+          movie.genres != null || typeof movie.genres !== "undefined"
+            ? (genreObj = Object.values(movie.genres))
+            : null;
+          let genreNames: string[] = [];
 
-            {/* bottom bar with action buttons */}
-            <BottomBar
-              movie={this.state.currentFlatlistItem}
-              handlePress={this.moveToNextItem}
-            />
-            {/* modal for choosing genre filter */}
-            <Modal animationType="none" visible={this.state.genreModalVisible}>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "space-around",
-                  backgroundColor: colors.dark,
-                }}
-              >
-                <View
-                  style={{
-                    position: "absolute",
-                    marginLeft: 25,
-                    marginTop: 25,
-                    zIndex: 99,
-                    padding: 10,
-                  }}
-                >
-                  <TouchableWithoutFeedback
-                    onPress={() =>
-                      this.setState({
-                        genreModalVisible: !this.state.genreModalVisible,
-                      })
-                    }
-                    style={{ padding: 5 }}
-                  >
-                    <FontAwesome5Icon
-                      name="chevron-left"
-                      size={34}
-                      color={colors.white}
-                    />
-                  </TouchableWithoutFeedback>
-                </View>
+          genreObj != null || typeof genreObj !== "undefined"
+            ? genreObj?.forEach((genre) => {
+                genreNames.push(genre.name);
+              })
+            : null;
 
-                {this.MakeGenreButtonList()}
-              </View>
-            </Modal>
-          </View>
-        ) : (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ActivityIndicator size={100} />
-            <Text
+          let data = genreNames.some((item) => item === genre);
+          return data;
+        });
+        setMoviesLoaded(false);
+        setMovies(fmovies);
+        setMoviesLoaded(true);
+      } catch (error) {
+        console.error(error.message);
+      }
+    });
+  };
+
+  return (
+    <View
+      style={{
+        height: "100%",
+        backgroundColor: colors.dark,
+        justifyContent: "center",
+      }}
+    >
+      <StatusBar backgroundColor={colors.dark} animated={true} />
+      {moviesLoaded && currMovieId ? (
+        <View style={{ justifyContent: "space-around" }}>
+          {/* top bar */}
+          <TopBar
+            handlePress={() => setModalVisible(!modalVisible)}
+            handleUserButtonPress={() =>
+              props.navigation.navigate("UserProfile")
+            }
+            genre={movieGenre}
+          />
+
+          {/* movies cards */}
+          <FlatList<Movie>
+            data={movies}
+            renderItem={({ item }) => <ImageView movie={item} />}
+            horizontal
+            pagingEnabled
+            scrollEnabled={false}
+            showsHorizontalScrollIndicator={false}
+            ref={flatlistRef}
+            keyExtractor={(item) => item.id.toString()}
+          />
+
+          {/* bottom bar with action buttons */}
+          <BottomBar handlePress={moveToNextItem} />
+
+          {/* modal for choosing genre filter */}
+          <Modal animationType="none" visible={modalVisible}>
+            <View
               style={{
-                color: colors.white,
-                fontSize: 24,
-                width: "60%",
-                textAlign: "center",
+                flex: 1,
+                justifyContent: "space-around",
+                backgroundColor: colors.dark,
               }}
             >
-              Loading your next favorite movies
-            </Text>
-          </View>
-        )}
-      </View>
-    );
-  }
-}
+              <View
+                style={{
+                  position: "absolute",
+                  marginLeft: 25,
+                  marginTop: 25,
+                  zIndex: 99,
+                  padding: 10,
+                }}
+              >
+                <TouchableWithoutFeedback
+                  onPress={() => setModalVisible(!modalVisible)}
+                  style={{ padding: 5 }}
+                >
+                  <FontAwesome5Icon
+                    name="chevron-left"
+                    size={34}
+                    color={colors.white}
+                  />
+                </TouchableWithoutFeedback>
+              </View>
+
+              {MakeGenreButtonList()}
+            </View>
+          </Modal>
+        </View>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator size={100} />
+          <Text
+            style={{
+              color: colors.white,
+              fontSize: 24,
+              width: "60%",
+              textAlign: "center",
+            }}
+          >
+            Loading your next favorite movies
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+export default HomeScreen;

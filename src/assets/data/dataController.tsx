@@ -12,6 +12,45 @@ export default class dataController extends Component {
     this.getAllMovies = this.getAllMovies.bind(this);
   }
 
+  usersRef = firebase
+    .firestore()
+    .collection("users")
+    .doc(firebase.auth().currentUser?.uid);
+
+  addMovieToList = (flag: string, movieId: number) => {
+    switch (flag) {
+      case "DISLIKE":
+        try {
+          this.usersRef.update({
+            dislikedMovies: firebase.firestore.FieldValue.arrayUnion(movieId),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      case "LIKE":
+        try {
+          this.usersRef.update({
+            likedMovies: firebase.firestore.FieldValue.arrayUnion(movieId),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      case "SEEN":
+        try {
+          this.usersRef.update({
+            seenMovies: firebase.firestore.FieldValue.arrayUnion(movieId),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
   getData = async () => {
     //returns all movies as an array of movies
     let movies: Movie[] = [];

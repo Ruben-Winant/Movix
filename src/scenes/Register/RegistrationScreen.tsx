@@ -1,89 +1,69 @@
 import "react-native-gesture-handler";
-import React, { Component } from "react";
-import {
-  Text,
-  View,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import React, { useState } from "react";
+import { Text, View, TextInput, TouchableOpacity, Alert } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import styles from "./styles";
 import { firebase } from "../../firebase/firebaseConfig";
 import colors from "../../assets/colors";
-import { UserProfile } from "..";
 import MovixLogo from "../../assets/fonts/images/MovixLogo";
 
 interface LoginScreenProps {
   navigation: NavigationStackProp<{}>;
 }
-interface LoginScreenState {
-  fullName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
 
-export default class RegistrationScreen extends Component<
-  LoginScreenProps,
-  LoginScreenState
-> {
-  setFullName(fullname: string) {
-    this.setState({
-      fullName: fullname,
-    });
-  }
-  setEmail(email: string) {
-    this.setState({
-      email: email,
-    });
-  }
-  setPassword(pwd: string) {
-    this.setState({
-      password: pwd,
-    });
-  }
-  setConfirmPassword(conpwd: string) {
-    this.setState({
-      confirmPassword: conpwd,
-    });
-  }
+const RegistrationScreen = (props: LoginScreenProps) => {
+  const [fullName, setFullName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-  onFooterLinkPress = () => {
-    this.props.navigation.navigate("Login");
+  const onFullNameChange = (fullname: string) => {
+    setFullName(fullname);
+  };
+  const onEmailChange = (email: string) => {
+    setEmail(email);
+  };
+  const onPasswordChange = (pwd: string) => {
+    setPassword(pwd);
+  };
+  const onConfirmPasswordChange = (conpwd: string) => {
+    setConfirmPassword(conpwd);
   };
 
-  onWhyLinkPress = () => {
+  const onFooterLinkPress = () => {
+    props.navigation.navigate("Login");
+  };
+
+  const onWhyLinkPress = () => {
     Alert.alert(
       "privacy info",
       "Your account will be used to save the movies you love! And yeah that's it. We do not share any of your information to third parties of any kind."
     );
   };
 
-  onRegisterPress = () => {
+  const onRegisterPress = () => {
     if (
-      this.state.email == null ||
-      this.state.password == null ||
-      this.state.fullName == null ||
-      this.state.confirmPassword == null
+      email == null ||
+      password == null ||
+      fullName == null ||
+      confirmPassword == null
     ) {
       Alert.alert("Whoops", "there seems to be some missing info");
       return;
     }
-    if (this.state.password !== this.state.confirmPassword) {
+    if (password !== confirmPassword) {
       Alert.alert("Whoops", "Passwords don't match.");
       return;
     }
     firebase
       .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .createUserWithEmailAndPassword(email, password)
       .then((response: any) => {
         const uid = response.user.uid;
         const data = {
           id: uid,
-          email: this.state.email,
-          fullName: this.state.fullName,
+          email: email,
+          fullName: fullName,
           likedMovies: [],
           seenMovies: [],
           dislikedMovies: [],
@@ -97,11 +77,11 @@ export default class RegistrationScreen extends Component<
             user
               ? user
                   .updateProfile({
-                    displayName: this.state.fullName,
+                    displayName: fullName,
                   })
                   .catch((error) => console.error(error.message))
               : null;
-            this.props.navigation.navigate("Home", { user: data });
+            props.navigation.navigate("Home", { user: data });
           })
           .catch((error) => {
             alert(error);
@@ -112,66 +92,66 @@ export default class RegistrationScreen extends Component<
       });
   };
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={{ flex: 1, width: "100%" }}>
-          <MovixLogo height={350} />
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            placeholderTextColor={colors.white}
-            onChangeText={(text) => this.setFullName(text)}
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="E-mail"
-            placeholderTextColor={colors.white}
-            onChangeText={(text) => this.setEmail(text)}
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.input}
-            placeholderTextColor={colors.white}
-            secureTextEntry
-            placeholder="Password"
-            onChangeText={(text) => this.setPassword(text)}
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.input}
-            placeholderTextColor={colors.white}
-            secureTextEntry
-            placeholder="Confirm Password"
-            onChangeText={(text) => this.setConfirmPassword(text)}
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-          />
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.onRegisterPress()}
-          >
-            <Text style={styles.buttonTitle}>Create account</Text>
-          </TouchableOpacity>
-          <View style={styles.footerView}>
-            <Text style={styles.footerText}>
-              Already got an account?{" "}
-              <Text onPress={this.onFooterLinkPress} style={styles.footerLink}>
-                Log in
-              </Text>
+  return (
+    <View style={styles.container}>
+      <View style={{ flex: 1, width: "100%" }}>
+        <MovixLogo height={350} />
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          placeholderTextColor={colors.white}
+          onChangeText={(text) => onFullNameChange(text)}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="E-mail"
+          placeholderTextColor={colors.white}
+          onChangeText={(text) => onEmailChange(text)}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholderTextColor={colors.white}
+          secureTextEntry
+          placeholder="Password"
+          onChangeText={(text) => onPasswordChange(text)}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholderTextColor={colors.white}
+          secureTextEntry
+          placeholder="Confirm Password"
+          onChangeText={(text) => onConfirmPasswordChange(text)}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => onRegisterPress()}
+        >
+          <Text style={styles.buttonTitle}>Create account</Text>
+        </TouchableOpacity>
+        <View style={styles.footerView}>
+          <Text style={styles.footerText}>
+            Already got an account?{" "}
+            <Text onPress={onFooterLinkPress} style={styles.footerLink}>
+              Log in
             </Text>
-            <Text style={styles.footerText}>
-              <Text onPress={this.onWhyLinkPress} style={styles.footerLink}>
-                Privacy
-              </Text>
+          </Text>
+          <Text style={styles.footerText}>
+            <Text onPress={onWhyLinkPress} style={styles.footerLink}>
+              Privacy
             </Text>
-          </View>
+          </Text>
         </View>
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
+
+export default RegistrationScreen;
