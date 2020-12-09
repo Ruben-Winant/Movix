@@ -25,7 +25,7 @@ const InfoButton = (props: IbProps) => {
     >
       <View>
         <FontAwesome5
-          name="info-circle"
+          name="times"
           size={30}
           color="white"
           style={stylesheets.infoButtonInner}

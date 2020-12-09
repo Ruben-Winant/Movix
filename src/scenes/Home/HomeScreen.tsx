@@ -8,6 +8,8 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   FlatList,
+  Animated,
+  Dimensions,
 } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
@@ -20,6 +22,10 @@ import { BottomBar, ImageView } from "../../components";
 import { TopBar } from "../../components/molecules/TopBar";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import { firebase } from "../../firebase/firebaseConfig";
+import {
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+} from "react-native-gesture-handler";
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -157,6 +163,26 @@ const HomeScreen = (props: HomeScreenProps) => {
     });
   };
 
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight = Dimensions.get("window").height;
+  const translationX = new Animated.Value(0);
+
+  const onPanGestureEvent = Animated.event(
+    [
+      {
+        nativeEvent: {
+          translationX: translationX,
+        },
+      },
+    ],
+    { useNativeDriver: true }
+  );
+
+  const onHandlerStateChange = (nativeEvent: PanGestureHandlerGestureEvent) => {
+    if (nativeEvent.nativeEvent) {
+    }
+  };
+
   return (
     <View
       style={{
@@ -180,7 +206,32 @@ const HomeScreen = (props: HomeScreenProps) => {
           {/* movies cards */}
           <FlatList<Movie>
             data={movies}
-            renderItem={({ item }) => <ImageView movie={item} />}
+            renderItem={({ item }) => (
+              <PanGestureHandler
+                onGestureEvent={onPanGestureEvent}
+                onHandlerStateChange={onHandlerStateChange}
+                activeOffsetX={[-50, 50]}
+                maxPointers={1}
+              >
+                <Animated.View
+                  style={[
+                    {},
+                    {
+                      transform: [
+                        {
+                          translateX: Animated.add(
+                            translationX,
+                            new Animated.Value(0)
+                          ),
+                        },
+                      ],
+                    },
+                  ]}
+                >
+                  <ImageView movie={item} />
+                </Animated.View>
+              </PanGestureHandler>
+            )}
             horizontal
             pagingEnabled
             scrollEnabled={false}

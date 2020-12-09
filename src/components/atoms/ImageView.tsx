@@ -7,7 +7,6 @@ import {
   Text,
   ScrollView,
   Linking,
-  TouchableWithoutFeedback,
 } from "react-native";
 import colors from "../../assets/colors";
 import { Movie } from "../../types/Movie";
@@ -16,6 +15,7 @@ import { Genre } from "../../types/Genre";
 import { MovieVideo, MovieResult } from "../../types/MovieVideo";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import Svg, { LinearGradient, Stop, G, Path, Defs } from "react-native-svg";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 interface IVprops {
   movie: Movie;
@@ -279,16 +279,13 @@ const ImageView = (props: IVprops) => {
           </View>
         </View>
       ) : (
-        <View>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setShowMovieInfo(!showMovieInfo);
+          }}
+        >
           {movieImg(0, false)}
-          <View style={styles.movieInfo}>
-            <InfoButton
-              handleClick={() => {
-                setShowMovieInfo(!showMovieInfo);
-              }}
-            />
-          </View>
-        </View>
+        </TouchableWithoutFeedback>
       )}
     </View>
   );
