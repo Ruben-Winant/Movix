@@ -26,6 +26,7 @@ import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
 } from "react-native-gesture-handler";
+import { concat, Extrapolate, interpolate } from "react-native-reanimated";
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -167,6 +168,12 @@ const HomeScreen = (props: HomeScreenProps) => {
   const deviceHeight = Dimensions.get("window").height;
   const translationX = new Animated.Value(0);
 
+  const rot = translationX.interpolate({
+    inputRange: [-deviceWidth / 2, deviceWidth / 2],
+    outputRange: ["13deg", "-13deg"],
+    extrapolate: Extrapolate.CLAMP,
+  });
+
   const onPanGestureEvent = Animated.event(
     [
       {
@@ -178,10 +185,9 @@ const HomeScreen = (props: HomeScreenProps) => {
     { useNativeDriver: true }
   );
 
-  const onHandlerStateChange = (nativeEvent: PanGestureHandlerGestureEvent) => {
-    if (nativeEvent.nativeEvent) {
-    }
-  };
+  const onHandlerStateChange = (
+    nativeEvent: PanGestureHandlerGestureEvent
+  ) => {};
 
   return (
     <View
@@ -223,6 +229,9 @@ const HomeScreen = (props: HomeScreenProps) => {
                             translationX,
                             new Animated.Value(0)
                           ),
+                        },
+                        {
+                          rotate: rot,
                         },
                       ],
                     },
