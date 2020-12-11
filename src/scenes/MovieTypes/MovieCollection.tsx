@@ -93,7 +93,12 @@ const MovieCollection = (props: MovieCollectionProps) => {
           data={movies}
           renderItem={(item) => (
             <SmallPosterCard
-              onClickPoster={() => alert(item.item.title)}
+              onClickPoster={() =>
+                props.navigation.navigate("MovieDetailScreen", {
+                  movie: item.item,
+                  mark: props.navigation.getParam("type"),
+                })
+              }
               posterPath={item.item.posterpath}
             />
           )}

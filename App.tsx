@@ -13,6 +13,7 @@ import { View } from "react-native";
 import { firebase } from "./src/firebase/firebaseConfig";
 import colors from "./src/assets/colors";
 import MovieCollection from "./src/scenes/MovieTypes/MovieCollection";
+import MovieDetailScreen from "./src/scenes/MovieDetails/MovieDetailScreen";
 
 interface AppProps {}
 interface AppState {
@@ -70,7 +71,7 @@ export default class App extends Component<AppProps, AppState> {
     } else {
       return (
         <AppContainer>
-          <StatusBar hidden={true} translucent={true} />
+          <StatusBar hidden={true} translucent={false} />
         </AppContainer>
       );
     }
@@ -96,6 +97,11 @@ const AppNavigator = createStackNavigator(
     MovieCollection: {
       screen: MovieCollection,
       params: { type: null, excluded: [] },
+      navigationOptions: { animationEnabled: false },
+    },
+    MovieDetailScreen: {
+      screen: MovieDetailScreen,
+      params: { movie: null, mark: "" },
       navigationOptions: { animationEnabled: false },
     },
   },

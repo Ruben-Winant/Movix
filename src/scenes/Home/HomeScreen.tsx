@@ -25,8 +25,10 @@ import { firebase } from "../../firebase/firebaseConfig";
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
+  State,
 } from "react-native-gesture-handler";
-import { concat, Extrapolate, interpolate } from "react-native-reanimated";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { add, call, cond, eq, Extrapolate, set } from "react-native-reanimated";
 
 interface HomeScreenProps {
   navigation: NavigationStackProp<{}>;
@@ -168,6 +170,16 @@ const HomeScreen = (props: HomeScreenProps) => {
   const deviceHeight = Dimensions.get("window").height;
   const translationX = new Animated.Value(0);
 
+  const likeLabelOpacity = translationX.interpolate({
+    inputRange: [0, deviceWidth / 4],
+    outputRange: [0, 1],
+    extrapolate: Extrapolate.CLAMP,
+  });
+  const dislikeLabelOpacity = translationX.interpolate({
+    inputRange: [-deviceWidth / 4, 0],
+    outputRange: [1, 0],
+    extrapolate: Extrapolate.CLAMP,
+  });
   const rot = translationX.interpolate({
     inputRange: [-deviceWidth / 2, deviceWidth / 2],
     outputRange: ["13deg", "-13deg"],
@@ -185,9 +197,25 @@ const HomeScreen = (props: HomeScreenProps) => {
     { useNativeDriver: true }
   );
 
-  const onHandlerStateChange = (
-    nativeEvent: PanGestureHandlerGestureEvent
-  ) => {};
+  const onHandlerStateChange = (nativeEvent: PanGestureHandlerGestureEvent) => {
+    if (nativeEvent.nativeEvent.state === State.END) {
+      if (
+        nativeEvent.nativeEvent.absoluteX >= 0 &&
+        nativeEvent.nativeEvent.absoluteX <= deviceWidth * 0.08 &&
+        nativeEvent.nativeEvent.absoluteY >= deviceHeight * 0.25 &&
+        nativeEvent.nativeEvent.absoluteY <= deviceHeight
+      ) {
+        moveToNextItem("DISLIKE");
+      } else if (
+        nativeEvent.nativeEvent.absoluteX >= deviceWidth - deviceWidth * 0.08 &&
+        nativeEvent.nativeEvent.absoluteX <= deviceWidth &&
+        nativeEvent.nativeEvent.absoluteY >= deviceHeight * 0.25 &&
+        nativeEvent.nativeEvent.absoluteY <= deviceHeight
+      ) {
+        moveToNextItem("LIKE");
+      }
+    }
+  };
 
   return (
     <View
@@ -197,7 +225,7 @@ const HomeScreen = (props: HomeScreenProps) => {
         justifyContent: "center",
       }}
     >
-      <StatusBar backgroundColor={colors.dark} animated={true} />
+      <StatusBar backgroundColor={colors.dark} animated={false} />
       {moviesLoaded && currMovieId ? (
         <View style={{ justifyContent: "space-around" }}>
           {/* top bar */}
@@ -209,14 +237,14 @@ const HomeScreen = (props: HomeScreenProps) => {
             genre={movieGenre}
           />
 
-          {/* movies cards */}
+          {/* movies flatlist */}
           <FlatList<Movie>
             data={movies}
             renderItem={({ item }) => (
               <PanGestureHandler
                 onGestureEvent={onPanGestureEvent}
                 onHandlerStateChange={onHandlerStateChange}
-                activeOffsetX={[-50, 50]}
+                activeOffsetX={[-25, 25]}
                 maxPointers={1}
               >
                 <Animated.View
@@ -237,6 +265,60 @@ const HomeScreen = (props: HomeScreenProps) => {
                     },
                   ]}
                 >
+                  {/* like and dislike labels when swiping */}
+                  <Animated.View
+                    style={{
+                      position: "absolute",
+                      left: 50,
+                      top: 50,
+                      zIndex: 9999,
+                      alignItems: "center",
+                      opacity: likeLabelOpacity,
+                    }}
+                  >
+                    <FontAwesome5
+                      name="heart"
+                      size={50}
+                      color={colors.lightgreen}
+                      solid={true}
+                    />
+                    <Text
+                      style={{
+                        color: colors.lightgreen,
+                        fontSize: 25,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      LIKE
+                    </Text>
+                  </Animated.View>
+                  <Animated.View
+                    style={{
+                      position: "absolute",
+                      right: 50,
+                      top: 50,
+                      zIndex: 9999,
+                      alignItems: "center",
+                      opacity: dislikeLabelOpacity,
+                    }}
+                  >
+                    <FontAwesome5
+                      name="times"
+                      size={50}
+                      color={colors.red}
+                      solid={true}
+                    />
+                    <Text
+                      style={{
+                        color: colors.red,
+                        fontSize: 25,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      DISLIKE
+                    </Text>
+                  </Animated.View>
+                  {/* image card */}
                   <ImageView movie={item} />
                 </Animated.View>
               </PanGestureHandler>

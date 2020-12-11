@@ -1,10 +1,7 @@
 import React from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { View, StyleSheet, Text } from "react-native";
-import {
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
+import { TouchableHighlight } from "react-native-gesture-handler";
 import colors from "../../assets/colors";
 
 interface SmtbProps {
