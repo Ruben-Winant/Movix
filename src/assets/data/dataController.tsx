@@ -3,6 +3,7 @@ import "react-native-gesture-handler";
 import { Movie } from "../../types/Movie";
 import { Genre } from "../../types/Genre";
 import { firebase } from "./../../../src/firebase/firebaseConfig";
+import { Alert } from "react-native";
 
 export default class dataController extends Component {
   constructor(props: any) {
@@ -28,7 +29,25 @@ export default class dataController extends Component {
           console.log(error);
         }
         break;
+      case "disliked":
+        try {
+          this.usersRef.update({
+            dislikedMovies: firebase.firestore.FieldValue.arrayUnion(movieId),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        break;
       case "LIKE":
+        try {
+          this.usersRef.update({
+            likedMovies: firebase.firestore.FieldValue.arrayUnion(movieId),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      case "liked":
         try {
           this.usersRef.update({
             likedMovies: firebase.firestore.FieldValue.arrayUnion(movieId),
@@ -46,8 +65,71 @@ export default class dataController extends Component {
           console.log(error);
         }
         break;
+      case "seen":
+        try {
+          this.usersRef.update({
+            seenMovies: firebase.firestore.FieldValue.arrayUnion(movieId),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+
       default:
         break;
+    }
+  };
+
+  removeMovieFromList = (flag: string, movieId: number) => {
+    switch (flag) {
+      case "disliked":
+        try {
+          this.usersRef.update({
+            dislikedMovies: firebase.firestore.FieldValue.arrayRemove(movieId),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      case "liked":
+        try {
+          this.usersRef.update({
+            likedMovies: firebase.firestore.FieldValue.arrayRemove(movieId),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      case "seen":
+        try {
+          this.usersRef.update({
+            seenMovies: firebase.firestore.FieldValue.arrayRemove(movieId),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  resetAllData = () => {
+    try {
+      this.usersRef.set(
+        {
+          likedMovies: [],
+          dislikedMovies: [],
+          seenMovies: [],
+        },
+        { merge: false }
+      );
+      Alert.alert(
+        "success",
+        "please restart the application in order to view the changes."
+      );
+    } catch (error) {
+      alert(error);
     }
   };
 

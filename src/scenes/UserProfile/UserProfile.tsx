@@ -12,10 +12,11 @@ import {
 import { NavigationStackProp } from "react-navigation-stack";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import colors from "../../assets/colors";
-import { TextInput } from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import firebase from "firebase";
 import Svg, { Defs, LinearGradient, Stop, G, Path } from "react-native-svg";
 import SettingsMovieTypeCountButtonRow from "../../components/molecules/SettingsMovieTypeCountButtonRow";
+import dataController from "../../assets/data/dataController";
 
 interface UserProfileProps {
   navigation: NavigationStackProp<{}>;
@@ -35,6 +36,7 @@ const UserProfile = (props: UserProfileProps) => {
   );
   const [statsViewCollapse, setStatsViewCollapse] = useState<boolean>(false);
   const deviceWidth = Dimensions.get("window").width;
+  let dataCont = new dataController({});
 
   const styles = StyleSheet.create({
     input: {
@@ -128,16 +130,21 @@ const UserProfile = (props: UserProfileProps) => {
     <View
       style={{
         backgroundColor: colors.dark,
-        flex: 1,
         paddingLeft: (deviceWidth * 0.1) / 2,
         paddingRight: (deviceWidth * 0.1) / 2,
       }}
     >
       {user && user.displayName && user.email ? (
-        <View style={{ flex: 1, padding: 20 }}>
+        <ScrollView
+          style={{
+            padding: 20,
+            height: "100%",
+          }}
+        >
           {/* Return button */}
           <View
             style={{
+              display: "flex",
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
@@ -161,7 +168,7 @@ const UserProfile = (props: UserProfileProps) => {
           </View>
 
           {/* User profile settings */}
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop: 20, display: "flex" }}>
             <TouchableWithoutFeedback
               onPress={() => setProfileViewCollapse(!profileViewCollapse)}
             >
@@ -258,7 +265,7 @@ const UserProfile = (props: UserProfileProps) => {
           </View>
 
           {/* Movie types */}
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop: 20, display: "flex" }}>
             <TouchableWithoutFeedback
               onPress={() => setMovieTypeViewCollapse(!movieTypeViewCollapse)}
             >
@@ -298,7 +305,6 @@ const UserProfile = (props: UserProfileProps) => {
                 )}
               </View>
             </TouchableWithoutFeedback>
-
             <View
               style={{
                 display: movieTypeViewCollapse ? "flex" : "none",
@@ -309,7 +315,7 @@ const UserProfile = (props: UserProfileProps) => {
           </View>
 
           {/* Stats */}
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop: 20, display: "flex" }}>
             <TouchableWithoutFeedback
               onPress={() => setStatsViewCollapse(!statsViewCollapse)}
             >
@@ -367,8 +373,11 @@ const UserProfile = (props: UserProfileProps) => {
           <View
             style={{
               marginTop: 20,
+              marginBottom: 30,
               alignSelf: "center",
               width: 190,
+              display: "flex",
+              height: 190,
             }}
           >
             <Text style={styles.label2}>Movie data provided by:</Text>
@@ -399,7 +408,40 @@ const UserProfile = (props: UserProfileProps) => {
               </Svg>
             </TouchableWithoutFeedback>
           </View>
-        </View>
+
+          {/* Reset button */}
+          <TouchableWithoutFeedback
+            style={{ display: "flex" }}
+            onPress={() =>
+              Alert.alert(
+                "Reset all movie data",
+                "Are you sure you want to delete all movie data?",
+                [
+                  {
+                    text: "Yes",
+                    onPress: () => dataCont.resetAllData(),
+                  },
+                  {
+                    text: "No",
+                    onPress: () => null,
+                    style: "cancel",
+                  },
+                ]
+              )
+            }
+          >
+            <Text
+              style={{
+                color: colors.red,
+                fontSize: 18,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              Reset all data
+            </Text>
+          </TouchableWithoutFeedback>
+        </ScrollView>
       ) : (
         <View></View>
       )}

@@ -22,6 +22,7 @@ import { Genre } from "../../types/Genre";
 import { MovieResult, MovieVideo } from "../../types/MovieVideo";
 import Svg, { Defs, G, Path, Stop, LinearGradient } from "react-native-svg";
 import { BottomActionButton } from "../../components";
+import dataController from "../../assets/data/dataController";
 
 interface MovieDetailProps {
   navigation: NavigationStackProp<{}>;
@@ -32,6 +33,10 @@ const MovieDetailScreen = (props: MovieDetailProps) => {
   const [dataLoaded, setLoaded] = useState<Boolean>(false);
   const [videos, setVideos] = useState<MovieVideo[]>([]);
   const [modal, setModal] = useState<boolean>(false);
+  const [currentMark, setCurrentMark] = useState<string>(
+    props.navigation.getParam("mark")
+  );
+  const dataCont = new dataController({});
 
   useEffect(() => {
     try {
@@ -141,7 +146,7 @@ const MovieDetailScreen = (props: MovieDetailProps) => {
 
   const createMarkLabel = () => {
     let color: colors = colors.dark;
-    switch (props.navigation.getParam("mark")) {
+    switch (currentMark) {
       case "seen":
         color = colors.blue;
         break;
@@ -169,9 +174,7 @@ const MovieDetailScreen = (props: MovieDetailProps) => {
       >
         <Text style={styles.smallText}>
           {"Currently marked as "}
-          <Text style={{ color: color }}>
-            {props.navigation.getParam("mark")}
-          </Text>
+          <Text style={{ color: color }}>{currentMark}</Text>
         </Text>
         <TouchableWithoutFeedback onPress={() => setModal(true)}>
           <Text
@@ -187,8 +190,15 @@ const MovieDetailScreen = (props: MovieDetailProps) => {
     );
   };
 
-  const changeMark = (newMark: string, id: number) => {
-    alert(newMark + " " + id);
+  const changeMark = (oldMark: string, newMark: string, id: number) => {
+    try {
+      dataCont.addMovieToList(newMark, id);
+      dataCont.removeMovieFromList(oldMark, id);
+      setCurrentMark(newMark);
+      setModal(!modal);
+    } catch (error) {
+      alert(error);
+    }
   };
 
   const styles = StyleSheet.create({
@@ -383,7 +393,13 @@ const MovieDetailScreen = (props: MovieDetailProps) => {
               iconcolor={colors.red}
               solid={true}
               flag="DISLIKE"
-              handlePress={() => changeMark("disliked", movie.id)}
+              handlePress={() =>
+                changeMark(
+                  props.navigation.getParam("mark"),
+                  "disliked",
+                  movie.id
+                )
+              }
               size={40}
             />
 
@@ -392,7 +408,9 @@ const MovieDetailScreen = (props: MovieDetailProps) => {
               iconcolor={colors.blue}
               solid={true}
               flag="SEEN"
-              handlePress={() => changeMark("seen", movie.id)}
+              handlePress={() =>
+                changeMark(props.navigation.getParam("mark"), "seen", movie.id)
+              }
               size={40}
             />
             <BottomActionButton
@@ -400,7 +418,9 @@ const MovieDetailScreen = (props: MovieDetailProps) => {
               iconcolor={colors.lightgreen}
               solid={true}
               flag="LIKE"
-              handlePress={() => changeMark("seen", movie.id)}
+              handlePress={() =>
+                changeMark(props.navigation.getParam("mark"), "liked", movie.id)
+              }
               size={40}
             />
           </View>

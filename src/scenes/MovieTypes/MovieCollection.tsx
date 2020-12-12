@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -24,9 +24,14 @@ interface MovieCollectionProps {
 const MovieCollection = (props: MovieCollectionProps) => {
   const [title, setTitle] = useState<String>("");
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [dataLoaded, setLoaded] = useState<Boolean>(false);
+  const [dataLoaded, setLoaded] = useState<boolean>(false);
+  const deviceWidth = Dimensions.get("window").width;
 
   useEffect(() => {
+    getApiData();
+  }, []);
+
+  const getApiData = () => {
     let type: string = props.navigation.getParam("type");
     if (type != "" && type != null) {
       type === "seen" ? setTitle("seen") : null;
@@ -44,9 +49,7 @@ const MovieCollection = (props: MovieCollectionProps) => {
         setLoaded(false);
       }
     });
-  }, []);
-
-  const deviceWidth = Dimensions.get("window").width;
+  };
 
   const styles = StyleSheet.create({
     outer: { backgroundColor: colors.dark, display: "flex", flex: 1 },

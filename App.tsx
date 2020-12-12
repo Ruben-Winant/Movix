@@ -96,7 +96,7 @@ const AppNavigator = createStackNavigator(
     },
     MovieCollection: {
       screen: MovieCollection,
-      params: { type: null, excluded: [] },
+      params: { type: null },
       navigationOptions: { animationEnabled: false },
     },
     MovieDetailScreen: {
