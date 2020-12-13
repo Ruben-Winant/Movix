@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from "react-native";
 import TopActionButton from "../atoms/TopActionButton";
-import colors from "../../assets/colors";
+import colors from "../../../assets/colors";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 
 interface topBarProps {

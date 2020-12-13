@@ -18,8 +18,8 @@ import colors from "../../assets/colors";
 import dataController from "../../assets/data/dataController";
 import { Flags } from "../../types/Flags";
 import { GenreList } from "../../types/GenreList";
-import { BottomBar, ImageView } from "../../components";
-import { TopBar } from "../../components/molecules/TopBar";
+import { BottomBar, ImageView } from "../../firebase/components";
+import { TopBar } from "../../firebase/components/molecules/TopBar";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import { firebase } from "../../firebase/firebaseConfig";
 import {

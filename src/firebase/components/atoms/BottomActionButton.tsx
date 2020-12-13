@@ -1,8 +1,8 @@
 import React from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { TouchableHighlight, StyleSheet, View, Text } from "react-native";
-import { Flags } from "../../types/Flags";
-import colors from "../../assets/colors";
+import { Flags } from "../../../types/Flags";
+import colors from "../../../assets/colors";
 
 interface BAbProps {
   iconname: string;

@@ -1,6 +1,6 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
-import colors from "../../assets/colors";
+import { View, StyleSheet } from "react-native";
+import colors from "../../../assets/colors";
 import BottomActionButton from "../atoms/BottomActionButton";
 
 interface BBprops {

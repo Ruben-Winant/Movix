@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import colors from "../../assets/colors";
+import colors from "../../../assets/colors";
 import SettingMovieTypeButton from "../atoms/SettingMovieTypeButton";
-import { firebase } from "../../firebase/firebaseConfig";
+import { firebase } from "../../firebaseConfig";
 import { NavigationStackProp } from "react-navigation-stack";
 
 interface iprops {

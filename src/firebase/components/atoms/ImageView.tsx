@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -8,11 +8,11 @@ import {
   ScrollView,
   Linking,
 } from "react-native";
-import colors from "../../assets/colors";
-import { Movie } from "../../types/Movie";
+import colors from "../../../assets/colors";
+import { Movie } from "../../../types/Movie";
 import InfoButton from "./InfoButton";
-import { Genre } from "../../types/Genre";
-import { MovieVideo, MovieResult } from "../../types/MovieVideo";
+import { Genre } from "../../../types/Genre";
+import { MovieVideo, MovieResult } from "../../../types/MovieVideo";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import Svg, { LinearGradient, Stop, G, Path, Defs } from "react-native-svg";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";

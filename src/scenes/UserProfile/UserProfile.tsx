@@ -15,7 +15,7 @@ import colors from "../../assets/colors";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import firebase from "firebase";
 import Svg, { Defs, LinearGradient, Stop, G, Path } from "react-native-svg";
-import SettingsMovieTypeCountButtonRow from "../../components/molecules/SettingsMovieTypeCountButtonRow";
+import SettingsMovieTypeCountButtonRow from "../../firebase/components/molecules/SettingsMovieTypeCountButtonRow";
 import dataController from "../../assets/data/dataController";
 
 interface UserProfileProps {

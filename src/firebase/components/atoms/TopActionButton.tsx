@@ -1,34 +1,38 @@
-import React, { Component } from "react";
+import React from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { View, StyleSheet } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
-interface IbProps {
-  handleClick: Function;
+interface TAbProps {
+  iconname: string;
+  actionbtnfunc: Function;
 }
 
-const InfoButton = (props: IbProps) => {
+const TopActionButton = (props: TAbProps) => {
   const stylesheets = StyleSheet.create({
-    infoButtonOutter: {
+    actionbtnouter: {
       justifyContent: "center",
+      borderRadius: 45,
       padding: "auto",
       width: 40,
       height: 40,
     },
-    infoButtonInner: { alignSelf: "center" },
+    actionbtninner: {
+      alignSelf: "center",
+    },
   });
 
   return (
     <TouchableWithoutFeedback
-      style={stylesheets.infoButtonOutter}
-      onPress={() => props.handleClick()}
+      style={stylesheets.actionbtnouter}
+      onPress={() => props.actionbtnfunc()}
     >
       <View>
         <FontAwesome5
-          name="times"
-          size={30}
+          name={props.iconname}
+          size={24}
           color="white"
-          style={stylesheets.infoButtonInner}
+          style={stylesheets.actionbtninner}
           solid={true}
         />
       </View>
@@ -36,4 +40,4 @@ const InfoButton = (props: IbProps) => {
   );
 };
 
-export default InfoButton;
+export default TopActionButton;

@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Image,
   Linking,
+  StatusBar,
 } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import colors from "../../assets/colors";
@@ -16,12 +17,11 @@ import {
 } from "react-native-gesture-handler";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
 import { Movie } from "../../types/Movie";
-import { StatusBar } from "expo-status-bar";
 import { LinearGradient as Ln } from "expo-linear-gradient";
 import { Genre } from "../../types/Genre";
 import { MovieResult, MovieVideo } from "../../types/MovieVideo";
 import Svg, { Defs, G, Path, Stop, LinearGradient } from "react-native-svg";
-import { BottomActionButton } from "../../components";
+import { BottomActionButton } from "../../firebase/components";
 import dataController from "../../assets/data/dataController";
 
 interface MovieDetailProps {

@@ -6,7 +6,7 @@ import {
   Dimensions,
   ActivityIndicator,
 } from "react-native";
-import SmallPosterCard from "../../components/atoms/SmallPosterCard";
+import SmallPosterCard from "../../firebase/components/atoms/SmallPosterCard";
 import { NavigationStackProp } from "react-navigation-stack";
 import colors from "../../assets/colors";
 import {
