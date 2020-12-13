@@ -8,8 +8,7 @@ import {
 import "react-native-gesture-handler";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-import { StatusBar } from "expo-status-bar";
-import { View } from "react-native";
+import { StatusBar, View } from "react-native";
 import { firebase } from "./src/firebase/firebaseConfig";
 import colors from "./src/assets/colors";
 import MovieCollection from "./src/scenes/MovieTypes/MovieCollection";
