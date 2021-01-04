@@ -10,6 +10,7 @@ import {
   FlatList,
   Animated,
   Dimensions,
+  requireNativeComponent,
 } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
 import "react-native-gesture-handler";
@@ -21,7 +22,6 @@ import { GenreList } from "../../types/GenreList";
 import { BottomBar, ImageView } from "../../firebase/components";
 import { TopBar } from "../../firebase/components/molecules/TopBar";
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5";
-import { firebase } from "../../firebase/firebaseConfig";
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
@@ -40,52 +40,40 @@ const HomeScreen = (props: HomeScreenProps) => {
   const [listPos, setListPos] = useState<number>(0);
   const [movieGenre, setGenre] = useState<string>("All");
   const [modalVisible, setModalVisible] = useState(false);
-  const [excludedMovies, setExcludedMovies] = useState<number[]>([]);
   const [currMovieId, setMovieId] = useState<number>();
   const flatlistRef = createRef<FlatList<Movie>>();
   const dataCont = new dataController({});
 
+  //! fetching the data returns all movies instead of the ones without a mark
   useEffect(() => {
-    let excluded: number[] = [];
     setModalVisible(false);
-
-    const retrieveData = async () => {
-      const usersRef = await firebase
-        .firestore()
-        .collection("users")
-        .doc(firebase.auth().currentUser?.uid);
-
-      //get the id's of all marked movies
-      const doc = await usersRef.get();
-
-      if (doc.exists) {
-        excluded = doc.get("seenMovies");
-        excluded = excluded.concat(doc.get("likedMovies"));
-        excluded = excluded.concat(doc.get("dislikedMovies"));
-        setExcludedMovies(excluded);
+    const init = async () => {
+      const movies: Movie[] | undefined = await dataCont.getData2();
+      if (movies != undefined && movies.length > 0) {
+        setMovies(movies);
+        setMoviesLoaded(true);
+        setMovieId(movies[0].id);
+      } else {
+        alert("An unexpected error happend: 0001");
       }
     };
 
-    retrieveData().then(() =>
-      dataCont.getData2(excluded).then((res) => {
-        res
-          ? (setMovies(res), setMoviesLoaded(true), setMovieId(res[0].id))
-          : alert("no movies found");
-      })
-    );
+    init();
   }, []);
 
   const moveToNextItem = (flag: Flags) => {
     currMovieId ? dataCont.addMovieToList(flag, currMovieId) : null;
-
     if (flatlistRef !== null && flatlistRef.current !== null) {
       if (typeof flatlistRef.current.scrollToIndex === "function") {
         setListPos(listPos + 1);
-        flatlistRef.current.scrollToIndex({ animated: false, index: listPos });
+        let pos = listPos + 1;
+        flatlistRef.current.scrollToIndex({
+          animated: false,
+          index: pos,
+        });
+        setMovieId(movies[pos].id);
       }
     }
-
-    setMovieId(movies[listPos].id);
   };
 
   const MakeGenreButtonList = () => {
@@ -103,7 +91,7 @@ const HomeScreen = (props: HomeScreenProps) => {
           style={{
             textAlign: "center",
             color: color,
-            fontSize: 28,
+            fontSize: deviceWidth / 15,
             width: 180,
             marginBottom: 15,
             marginTop: 15,
@@ -130,7 +118,7 @@ const HomeScreen = (props: HomeScreenProps) => {
   const FilterMovies = (genre: string) => {
     if (genre === "All") {
       setMoviesLoaded(false);
-      dataCont.getData2(excludedMovies).then((res) => {
+      dataCont.getData2().then((res) => {
         res
           ? (setMovies(res), setMoviesLoaded(true))
           : alert("no movies found");
@@ -139,27 +127,29 @@ const HomeScreen = (props: HomeScreenProps) => {
     }
 
     setMoviesLoaded(false);
-    dataCont.getData2(excludedMovies).then((res) => {
+    dataCont.getData2().then((res) => {
       try {
-        let fmovies: Movie[] = res.filter((movie) => {
-          let genreObj;
-          movie.genres != null || typeof movie.genres !== "undefined"
-            ? (genreObj = Object.values(movie.genres))
-            : null;
-          let genreNames: string[] = [];
+        if (res != undefined) {
+          let fmovies: Movie[] = res.filter((movie) => {
+            let genreObj;
+            movie.genres != null || typeof movie.genres !== "undefined"
+              ? (genreObj = Object.values(movie.genres))
+              : null;
+            let genreNames: string[] = [];
 
-          genreObj != null || typeof genreObj !== "undefined"
-            ? genreObj?.forEach((genre) => {
-                genreNames.push(genre.name);
-              })
-            : null;
+            genreObj != null || typeof genreObj !== "undefined"
+              ? genreObj?.forEach((genre) => {
+                  genreNames.push(genre.name);
+                })
+              : null;
 
-          let data = genreNames.some((item) => item === genre);
-          return data;
-        });
-        setMoviesLoaded(false);
-        setMovies(fmovies);
-        setMoviesLoaded(true);
+            let data = genreNames.some((item) => item === genre);
+            return data;
+          });
+          setMoviesLoaded(false);
+          setMovies(fmovies);
+          setMoviesLoaded(true);
+        }
       } catch (error) {
         console.error(error.message);
       }
@@ -226,7 +216,7 @@ const HomeScreen = (props: HomeScreenProps) => {
       }}
     >
       <StatusBar backgroundColor={colors.dark} animated={false} />
-      {moviesLoaded && currMovieId ? (
+      {moviesLoaded ? (
         <View style={{ justifyContent: "space-around" }}>
           {/* top bar */}
           <TopBar

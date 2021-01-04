@@ -22,6 +22,9 @@
     "web": {
       "favicon": "./src/assets/images/Movix_logo.png"
     },
-    "description": "Movix is an app where one can quickly find new movies to watch! "
+    "description": "Movix is an app where one can quickly find new movies to watch! ",
+    "android": {
+      "package": "com.rubenwinant.movix"
+    }
   }
 }

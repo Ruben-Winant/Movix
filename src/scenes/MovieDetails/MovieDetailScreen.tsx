@@ -61,7 +61,7 @@ const MovieDetailScreen = (props: MovieDetailProps) => {
 
   const genreList = (genres: Genre[]) => {
     let result: any[] = [];
-    var i = 0;
+
     Object.values(genres).forEach((genre) => {
       if (genre.id != null && typeof genre.id != "undefined") {
         result.push(
