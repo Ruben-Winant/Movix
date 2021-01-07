@@ -5,8 +5,9 @@ This is Movix, a React native application where you can quickly view all you nee
 Every movie you mark will be saved so you can go back to them later and view which ones you liked. 
 
 
-I hope by building this application that some people will discover new movies they'll remember for years to come!
+This project lays close to my heart and i hope it brings soem joy into your life! 
 
+Check it out: http://www.rubenwinant.be/movix
 
 Here's a list of features that i want to be present in this app:
 - [x] make it possible to create an account
