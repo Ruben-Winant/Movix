@@ -16,8 +16,8 @@ Here's a list of features that i want to be present in this app:
 - [x] filter on genre
 - [x] mark movies
 - [x] view marked movies per mark
-- [ ] view marked movie data 
-- [ ] change mark on marked movie
+- [x] view marked movie data 
+- [x] change mark on marked movie
 - [ ] stat page (percent per genre, global numbers, etc)
 - [ ] make web portal for admin so he can add movies
 
