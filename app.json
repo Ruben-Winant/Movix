@@ -17,7 +17,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.rubenwinant.movix"
     },
     "web": {
       "favicon": "./src/assets/images/Movix_logo.png"

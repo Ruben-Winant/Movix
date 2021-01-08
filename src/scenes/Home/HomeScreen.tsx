@@ -120,7 +120,7 @@ const HomeScreen = (props: HomeScreenProps) => {
       setMoviesLoaded(false);
       dataCont.getData2().then((res) => {
         res
-          ? (setMovies(res), setMoviesLoaded(true))
+          ? (setMovies(res), setMovieId(res[0].id), setMoviesLoaded(true))
           : alert("no movies found");
       });
       return;
@@ -148,6 +148,7 @@ const HomeScreen = (props: HomeScreenProps) => {
           });
           setMoviesLoaded(false);
           setMovies(fmovies);
+          setMovieId(fmovies[0].id);
           setMoviesLoaded(true);
         }
       } catch (error) {
