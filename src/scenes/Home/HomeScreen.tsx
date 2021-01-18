@@ -44,7 +44,6 @@ const HomeScreen = (props: HomeScreenProps) => {
   const flatlistRef = createRef<FlatList<Movie>>();
   const dataCont = new dataController({});
 
-  //! fetching the data returns all movies instead of the ones without a mark
   useEffect(() => {
     setModalVisible(false);
     const init = async () => {

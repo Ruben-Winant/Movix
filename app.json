@@ -26,6 +26,7 @@
     "description": "Movix is an app where one can quickly find new movies to watch! ",
     "android": {
       "package": "com.rubenwinant.movix"
-    }
+    },
+    "permissions": []
   }
 }
